@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import SystemMetrics from "@/components/SystemMetrics";
 import {
   Card,
@@ -10,7 +10,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RefreshCw, AlertTriangle, CheckCircle, Trash2 } from "lucide-react";
+import {
+  RefreshCw,
+  AlertTriangle,
+  CheckCircle,
+  Trash2,
+  Loader2,
+} from "lucide-react";
 
 interface ScanResult {
   success: boolean;
@@ -29,51 +35,55 @@ interface ScanResult {
 export default function DashboardPage() {
   const [scanResults, setScanResults] = useState<ScanResult | null>(null);
   const [scanHistory, setScanHistory] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Start with loading true
   const [selectedScan, setSelectedScan] = useState<ScanResult | null>(null);
 
-  // Fetch scan results from the Next.js API route
-  const fetchScanResults = async () => {
+  // Memoized fetch functions
+  const fetchScanResults = useCallback(async () => {
     try {
       const response = await fetch("/api/results");
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
-      if (data && Object.keys(data).length > 0) {
+      if (data.success === true) {
         setScanResults(data);
+      } else {
+        setScanResults(null);
       }
     } catch (error) {
       console.error("Error fetching scan results:", error);
+      setScanResults(null);
     }
-  };
+  }, []);
 
-  // Fetch scan history from the Next.js API route
-  const fetchScanHistory = async () => {
+  const fetchScanHistory = useCallback(async () => {
     try {
       const response = await fetch("/api/history");
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
-      setScanHistory(data);
+      if (Array.isArray(data)) {
+        setScanHistory(data);
+      } else {
+        setScanHistory([]);
+      }
     } catch (error) {
       console.error("Error fetching scan history:", error);
+      setScanHistory([]);
     }
-  };
+  }, []);
 
-  // Refresh data by calling both fetch functions
-  const refreshData = async () => {
+  const refreshData = useCallback(async () => {
     setIsLoading(true);
     await Promise.all([fetchScanResults(), fetchScanHistory()]);
     setIsLoading(false);
-  };
+  }, [fetchScanResults, fetchScanHistory]);
 
-  // Handle scan selection for the modal view
-  const handleScanClick = (scan: any) => {
-    setSelectedScan(scan);
-  };
+  const handleScanClick = useCallback((scan: any) => setSelectedScan(scan), []);
+  const closeSelectedScan = useCallback(() => setSelectedScan(null), []);
 
-  // Close the selected scan modal
-  const closeSelectedScan = () => {
-    setSelectedScan(null);
-  };
-
-  // Clear scan history by calling the API route
   const clearHistory = async () => {
     try {
       const response = await fetch("/api/clear");
@@ -86,20 +96,17 @@ export default function DashboardPage() {
     }
   };
 
-  // Initial data fetch and polling setup
   useEffect(() => {
-    fetchScanResults();
-    fetchScanHistory();
+    // Initial fetch
+    refreshData();
 
-    const interval = setInterval(() => {
-      fetchScanResults();
-      fetchScanHistory();
-    }, 5000);
+    // Increased polling interval from 5s to 10s for better performance
+    const interval = setInterval(refreshData, 10000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [refreshData]);
 
-  // Memoized calculation for the system overview metrics
+  // Memoized calculations
   const updatedSystemOverview = {
     totalScans: scanHistory.length,
     totalCritical: scanHistory.reduce(
@@ -119,7 +126,6 @@ export default function DashboardPage() {
         .length || 0,
   };
 
-  // Prepare top risk items for the summary tab
   const riskItems = scanResults?.risks?.slice(0, 3).map((risk: any) => ({
     title: risk.description,
     description: risk.impact || "Security risk detected",
@@ -132,7 +138,6 @@ export default function DashboardPage() {
     },
   ];
 
-  // Helper function to determine color based on risk severity
   const getRiskSeverityColor = (severity: string) => {
     switch (severity) {
       case "critical":
@@ -148,6 +153,18 @@ export default function DashboardPage() {
     }
   };
 
+  // Show loading spinner on initial load
+  if (isLoading && !scanResults && scanHistory.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center space-y-4">
+          <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
+          <p className="text-muted-foreground">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-8 space-y-8 bg-gray-100 min-h-screen">
       <div className="bg-white rounded-lg p-8 shadow-sm space-y-8">
@@ -161,7 +178,7 @@ export default function DashboardPage() {
           <button
             onClick={refreshData}
             disabled={isLoading}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 transition-all"
           >
             <RefreshCw size={16} className={isLoading ? "animate-spin" : ""} />
             Refresh
@@ -177,7 +194,6 @@ export default function DashboardPage() {
           </TabsList>
 
           <TabsContent value="recent-activity" className="mt-6 space-y-4">
-            {/* Recent Activity content can be added here in the future */}
             <p className="text-sm text-muted-foreground">
               Recent activity will be shown here.
             </p>
@@ -476,7 +492,6 @@ export default function DashboardPage() {
               </div>
 
               <div className="space-y-4">
-                {/* Scan Header */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     {selectedScan.success ? (
@@ -497,7 +512,6 @@ export default function DashboardPage() {
                   )}
                 </div>
 
-                {/* File Path */}
                 {selectedScan.file_path && (
                   <div className="p-3 bg-gray-50 rounded">
                     <p className="text-sm font-medium">File Analyzed:</p>
@@ -507,7 +521,6 @@ export default function DashboardPage() {
                   </div>
                 )}
 
-                {/* Risk Summary */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div className="p-4 bg-red-50 rounded-lg">
                     <p className="text-sm font-medium text-red-800">Critical</p>
@@ -545,9 +558,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                {/* Detailed Results */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Left column - Security Constraints and Risks */}
                   <div className="space-y-6">
                     {selectedScan.constraints &&
                       selectedScan.constraints.length > 0 && (
@@ -604,7 +615,6 @@ export default function DashboardPage() {
                     )}
                   </div>
 
-                  {/* Right column - Security Recommendations */}
                   {selectedScan.hardened_code &&
                     selectedScan.hardened_code.length > 0 && (
                       <div className="h-full flex flex-col">
@@ -623,7 +633,6 @@ export default function DashboardPage() {
                     )}
                 </div>
 
-                {/* Error Message */}
                 {selectedScan.error && (
                   <div className="p-3 bg-red-50 border border-red-200 rounded">
                     <p className="text-sm font-medium text-red-800">Error:</p>
