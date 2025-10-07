@@ -15,26 +15,19 @@ scan_history = []
 scan_counter = 0
 
 def send_results_to_webapp(results):
-    """Send scan results to the web application"""
+    """Stores scan results and assigns a scan ID."""
     global latest_results, scan_history, scan_counter
-    
     try:
-        # Add timestamp and scan ID
         results['timestamp'] = datetime.now().isoformat()
-        results['scan_id'] = scan_counter
+        results['scan_id'] = scan_counter # Assign the ID
         scan_counter += 1
         
-        # Store as latest results
         latest_results = results
-        
-        # Add to history
         scan_history.append(results)
-        
-        # Keep only last 10 scans in history
         if len(scan_history) > 10:
             scan_history.pop(0)
             
-        print(f"Results stored in web app")
+        print(f"Results for scan_id {results['scan_id']} stored in web app")
         
     except Exception as e:
         print(f"⚠️ Error storing results in web app: {e}")
@@ -167,13 +160,27 @@ def scan_from_upload():
                 # Use our existing function to store the results
                 send_results_to_webapp(scan_result)
                 
-                return jsonify({"status": "success", "message": "File received and scan initiated."})
+                return jsonify({
+                        "status": "success",
+                        "message": "File received and scan initiated.",
+                        "scan_id": scan_result.get("scan_id") # <-- ADD THIS LINE
+                    })
 
         return jsonify({"status": "error", "message": "Invalid file type. Only .py files are accepted."}), 400
 
     except Exception as e:
         print(f"❌ Error during file upload and scan: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@app.route('/api/history/<int:scan_id>')
+def get_scan_by_id(scan_id):
+    """Get a specific scan from history by its ID."""
+    scan = next((s for s in scan_history if s.get('scan_id') == scan_id), None)
+    if scan:
+        return jsonify(scan)
+    else:
+        return jsonify({"error": "Scan not found"}), 404
 
 if __name__ == '__main__':
     # Create dist directory if it doesn't exist

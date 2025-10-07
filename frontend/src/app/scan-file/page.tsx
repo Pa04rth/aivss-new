@@ -1,25 +1,32 @@
-// frontend/src/app/scan-file/page.tsx
-import UploadForm from "@/components/UploadForm";
+import UploadAndScan from "@/components/UploadAndScan";
 
 export default function ScanFilePage() {
   return (
     <div className="p-8 space-y-12 text-foreground">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Upload Codebase</h1>
-        <p className="text-muted-foreground mt-2">
-          Drag and drop a Python file or click to select one for security
-          analysis.
+      {/* --- TOP SECTION --- */}
+      <div className="max-w-3xl mx-auto">
+        <h1 className="text-3xl font-bold tracking-tight text-center">
+          Upload Codebase
+        </h1>
+        <p className="text-muted-foreground mt-2 text-center">
+          Select a Python file for security analysis.
         </p>
       </div>
 
-      <UploadForm />
+      {/* --- STATEFUL COMPONENT SECTION --- */}
+      {/* This component will now handle the idle, in-progress, and completed states */}
+      <div className="min-h-[400px]">
+        {" "}
+        {/* Add a min-height to prevent layout shifts */}
+        <UploadAndScan />
+      </div>
 
-      <div className="mt-12">
-        <h2 className="text-2xl font-bold tracking-tight mb-6">
+      {/* --- BOTTOM "WHAT WE SCAN FOR" SECTION (Always Visible) --- */}
+      <div className="max-w-5xl mx-auto pt-8 border-t">
+        <h2 className="text-2xl font-bold tracking-tight mb-6 text-center">
           What We Scan For
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Static Analysis Column */}
           <div className="bg-card border rounded-lg p-6">
             <h3 className="font-semibold mb-4 text-lg">Static Analysis</h3>
             <ul className="space-y-3 text-muted-foreground text-sm list-disc list-inside">
@@ -29,7 +36,6 @@ export default function ScanFilePage() {
               <li>Data leakage potential</li>
             </ul>
           </div>
-          {/* AI-Powered Analysis Column */}
           <div className="bg-card border rounded-lg p-6">
             <h3 className="font-semibold mb-4 text-lg">AI-Powered Analysis</h3>
             <ul className="space-y-3 text-muted-foreground text-sm list-disc list-inside">

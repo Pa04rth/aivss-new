@@ -234,14 +234,9 @@
 //   );
 // }
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+
 import "./globals.css";
 import AppShell from "@/components/AppShell"; // <-- Import our new Client Component
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
 // This is a Server Component, so we can export metadata
 export const metadata: Metadata = {
@@ -257,7 +252,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} bg-background text-foreground`}>
+      <body className="bg-background text-foreground">
         <AppShell>{children}</AppShell>
       </body>
     </html>

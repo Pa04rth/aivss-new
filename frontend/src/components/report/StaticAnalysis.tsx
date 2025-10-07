@@ -1,0 +1,75 @@
+import { StaticFinding } from "@/lib/types";
+import { Card } from "@/components/ui/card";
+import { ShieldAlert, ShieldOff, Wrench } from "lucide-react";
+
+interface Props {
+  findings: StaticFinding[];
+}
+
+export default function StaticAnalysis({ findings }: Props) {
+  if (!findings || findings.length === 0) return null;
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-2xl font-bold tracking-tight flex items-center gap-3">
+          <ShieldOff className="text-primary" />
+          Static Analysis Results
+          <span className="text-sm font-bold bg-muted text-muted-foreground px-2 py-1 rounded-md">
+            {findings.length} found
+          </span>
+        </h2>
+        <p className="text-muted-foreground mt-1">
+          Security vulnerabilities detected through automated pattern analysis.
+        </p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Security Risks Column */}
+        <div>
+          <h3 className="font-semibold mb-4">Security Risks:</h3>
+          <div className="space-y-4">
+            {findings.map((finding, index) => (
+              <Card key={index} className="p-4">
+                <span
+                  className={`inline-flex items-center gap-2 text-xs font-bold uppercase px-3 py-1 rounded-full border bg-red-500/5 text-red-500`}
+                >
+                  <ShieldAlert size={14} />
+                  {finding.severity}
+                </span>
+                <h4 className="font-bold mt-3">{finding.risk}</h4>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {finding.risk} detected.
+                </p>
+                <div className="mt-3">
+                  <span className="text-xs font-semibold bg-muted text-muted-foreground px-3 py-1 rounded-full">
+                    File: {finding.file}:{finding.line}
+                  </span>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+        {/* Security Recommendations Column */}
+        <div>
+          <h3 className="font-semibold mb-4">Security Recommendations:</h3>
+          <div className="space-y-4">
+            {findings.map((finding, index) => (
+              <Card key={index} className="p-4 h-full">
+                <h4 className="font-bold">{finding.risk}</h4>
+                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+                  {finding.recommendation}
+                </p>
+                <div className="mt-4 text-xs text-muted-foreground text-right">
+                  Priority:{" "}
+                  <span className="font-bold capitalize">
+                    {finding.priority}
+                  </span>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
