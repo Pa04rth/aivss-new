@@ -9,7 +9,6 @@ export async function GET(
 ) {
   const scanId = params.scanId;
   try {
-    // We will create this new endpoint in app.py next
     const response = await fetch(`${BACKEND_URL}/api/history/${scanId}`, {
       cache: "no-store",
     });

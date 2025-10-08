@@ -130,7 +130,7 @@ export default function MyScansClient({
                     {scan.risks_count || 0} vulnerabilities found
                   </span>
                   <Link
-                    href={`/my-scans/${scan.scan_id}/report`}
+                    href={`/my-scans/${scan.scan_id}`}
                     className="flex items-center gap-2 text-sm font-semibold text-primary hover:underline ml-auto"
                   >
                     <Eye size={16} /> View Report

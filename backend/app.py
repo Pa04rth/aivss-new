@@ -82,6 +82,8 @@ def get_scan_history():
     """Get scan history"""
     return jsonify(scan_history)
 
+
+
 @app.route('/api/clear', methods=['GET'])
 def clear_results():
     """Clear all results"""

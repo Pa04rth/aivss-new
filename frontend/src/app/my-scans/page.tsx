@@ -1,5 +1,5 @@
-// frontend/src/app/my-scans/page.tsx (New Server Component)
-import MyScansClient from "./MyScansClient";
+// frontend/src/app/my-scans/page.tsx
+import MyScansList from "./MyScansList"; // We renamed the client component
 
 const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5001";
 
@@ -10,7 +10,6 @@ async function getScanHistory() {
     });
     if (!res.ok) return [];
     const data = await res.json();
-    // Sort on the server
     return Array.isArray(data)
       ? data.sort(
           (a, b) =>
@@ -24,6 +23,5 @@ async function getScanHistory() {
 
 export default async function MyScansPage() {
   const initialScanHistory = await getScanHistory();
-
-  return <MyScansClient initialScanHistory={initialScanHistory} />;
+  return <MyScansList initialScanHistory={initialScanHistory} />;
 }
