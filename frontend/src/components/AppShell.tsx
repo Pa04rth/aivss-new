@@ -108,16 +108,16 @@ export default function AppShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen">
       <div className="flex h-screen">
         {/* Sidebar */}
-        <div className="w-64 bg-sidebar border-r border-sidebar-border flex flex-col">
-          <div className="p-4 border-b border-sidebar-border">
+        <div className="w-64 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+          <div className="p-4 border-b border-gray-200 dark:border-gray-700">
             <div>
-              <h1 className="text-lg font-bold text-sidebar-foreground">
-                aegent/dev
+              <h1 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                Hive
               </h1>
-              <p className="text-xs text-sidebar-foreground">
+              <p className="text-xs text-gray-900 dark:text-gray-100">
                 Agentic Security Scanner
               </p>
-              <p className="text-xs text-muted-foreground mt-2">
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
                 This is a proof of concept of our multi agent security scanner.
                 We love ideas and recommendations of what you'd like to see in
                 such a tool!
@@ -138,7 +138,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <div className="p-4">
             <Link
               href="/scan-file"
-              className="flex items-center justify-center w-full px-4 py-2.5 text-sm font-semibold bg-primary text-primary-foreground rounded-md hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-sm hover:shadow-md"
+              className="flex items-center justify-center w-full px-4 py-2.5 text-sm font-semibold bg-blue-600 text-white rounded-md hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-sm hover:shadow-md"
             >
               <UploadCloud size={18} className="mr-2" />
               Scan File
@@ -148,7 +148,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <nav className="flex-1 p-4 space-y-6 overflow-y-auto">
             {navigation.map((section) => (
               <div key={section.section}>
-                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                <h3 className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-3">
                   {section.section}
                 </h3>
                 <ul className="space-y-1">
@@ -165,8 +165,8 @@ export default function AppShell({ children }: { children: ReactNode }) {
                             transition-all duration-200 ease-in-out
                             ${
                               isActive
-                                ? "bg-gray-900 text-white shadow-md scale-[1.02]"
-                                : "text-muted-foreground hover:bg-gray-900 hover:text-white hover:scale-[1.02] hover:shadow-md active:scale-[0.98]"
+                                ? "bg-blue-600 text-white shadow-md scale-[1.02]"
+                                : "text-gray-600 dark:text-gray-400 hover:bg-blue-600 hover:text-white hover:scale-[1.02] hover:shadow-md active:scale-[0.98]"
                             }
                           `}
                         >
@@ -201,8 +201,8 @@ export default function AppShell({ children }: { children: ReactNode }) {
             ))}
           </nav>
 
-          <div className="p-4 border-t border-sidebar-border">
-            <p className="text-xs text-muted-foreground">
+          <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+            <p className="text-xs text-gray-600 dark:text-gray-400">
               <a
                 href="https://www.aegentdev.com/blog"
                 target="_blank"
@@ -217,10 +217,12 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
         {/* Main content */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          <header className="bg-card border-b border-border px-6 py-4">
+          <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
             {/* Header content will go here */}
           </header>
-          <main className="flex-1 overflow-auto">{children}</main>
+          <main className="flex-1 overflow-auto bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+            {children}
+          </main>
         </div>
       </div>
     </div>

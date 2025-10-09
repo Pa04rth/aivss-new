@@ -2,7 +2,7 @@ import { FullScanReport } from "@/lib/types";
 
 // This data is based on your MVP screenshots for vulnerable_api_agent.py
 export const DUMMY_REPORT_DATA: FullScanReport = {
-  scanId: 1,
+  scan_id: 1,
   scanName: "luxi's Security Scan - 10/7/2025",
   status: "completed",
   scanCreated: "2025-10-07T12:35:52Z",

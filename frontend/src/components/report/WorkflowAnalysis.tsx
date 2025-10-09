@@ -14,7 +14,7 @@ export default function WorkflowAnalysis({ analysis }: Props) {
           <GitGraph className="text-primary" />
           Workflow Analysis Results
         </h2>
-        <p className="text-muted-foreground mt-1">
+        <p className="text-gray-700 mt-1">
           Comprehensive security analysis including system overview, AI
           findings, and workflow patterns.
         </p>
@@ -27,7 +27,7 @@ export default function WorkflowAnalysis({ analysis }: Props) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-foreground text-sm leading-relaxed">
             {analysis.systemOverview}
           </p>
         </CardContent>
@@ -46,9 +46,9 @@ export default function WorkflowAnalysis({ analysis }: Props) {
             {analysis.nodes.map((node) => (
               <div
                 key={node.id}
-                className="bg-card border p-4 rounded-lg text-center shadow-md"
+                className="bg-card border border-border p-4 rounded-lg text-center shadow-md"
               >
-                <h4 className="font-bold">{node.label}</h4>
+                <h4 className="font-bold text-foreground">{node.label}</h4>
                 <p className="text-xs text-muted-foreground capitalize">
                   {node.type}
                 </p>
@@ -75,7 +75,7 @@ export default function WorkflowAnalysis({ analysis }: Props) {
               key={i}
               className="bg-muted/50 p-3 rounded-md text-sm font-mono flex justify-between items-center"
             >
-              <span>
+              <span className="text-foreground">
                 {conn.source} → {conn.target}
               </span>
               <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
@@ -93,14 +93,16 @@ export default function WorkflowAnalysis({ analysis }: Props) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="divide-y">
+          <div className="divide-y divide-border">
             {Object.entries(analysis.frameworks).map(([key, value]) => (
               <div
                 key={key}
                 className="flex justify-between items-center py-2 text-sm"
               >
-                <span className="text-muted-foreground">{key}</span>
-                <span className="font-semibold">{value} files</span>
+                <span className="text-foreground">{key}</span>
+                <span className="font-semibold text-foreground">
+                  {value} files
+                </span>
               </div>
             ))}
           </div>

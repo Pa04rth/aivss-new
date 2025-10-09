@@ -6,7 +6,11 @@ import threading
 import time
 import tempfile
 import uuid
+from dotenv import load_dotenv
 from scanner_logic import run_scan_on_file
+
+# Load environment variables
+load_dotenv()
 app = Flask(__name__, static_folder='dist', static_url_path='')
 
 # Global variables to store scan results and history
@@ -22,12 +26,23 @@ def send_results_to_webapp(results):
         results['scan_id'] = scan_counter # Assign the ID
         scan_counter += 1
         
+        print(f"🔍 [DEBUG] Storing results for scan_id {results['scan_id']}")
+        print(f"🔍 [DEBUG] Results keys: {list(results.keys())}")
+        print(f"🔍 [DEBUG] Has contextualFindings: {'contextualFindings' in results}")
+        print(f"🔍 [DEBUG] Has staticFindings: {'staticFindings' in results}")
+        print(f"🔍 [DEBUG] Has aivssAnalysis: {'aivssAnalysis' in results}")
+        print(f"🔍 [DEBUG] Has aarsAnalysis: {'aarsAnalysis' in results}")
+        if 'contextualFindings' in results:
+            print(f"🔍 [DEBUG] Contextual findings count: {len(results.get('contextualFindings', []))}")
+        if 'staticFindings' in results:
+            print(f"🔍 [DEBUG] Static findings count: {len(results.get('staticFindings', []))}")
+        
         latest_results = results
         scan_history.append(results)
         if len(scan_history) > 10:
             scan_history.pop(0)
             
-        print(f"Results for scan_id {results['scan_id']} stored in web app")
+        print(f"✅ Results for scan_id {results['scan_id']} stored in web app")
         
     except Exception as e:
         print(f"⚠️ Error storing results in web app: {e}")
@@ -70,16 +85,34 @@ def receive_scan_results():
 @app.route('/api/results')
 def get_latest_results():
     """Get the latest scan results"""
+    print(f"🔍 [DEBUG] /api/results called")
+    print(f"🔍 [DEBUG] latest_results exists: {bool(latest_results)}")
+    
     if not latest_results:
         # If there are no results, return a structured "not found" response
+        print(f"🔍 [DEBUG] No results available, returning not found")
         return jsonify({"success": False, "message": "No scan results available yet."})
     else:
         # If there are results, return them as before
+        print(f"🔍 [DEBUG] Returning latest_results with scan_id: {latest_results.get('scan_id', 'N/A')}")
+        print(f"🔍 [DEBUG] Latest results keys: {list(latest_results.keys())}")
+        print(f"🔍 [DEBUG] Has contextualFindings: {'contextualFindings' in latest_results}")
+        print(f"🔍 [DEBUG] Has staticFindings: {'staticFindings' in latest_results}")
+        print(f"🔍 [DEBUG] Has aivssAnalysis: {'aivssAnalysis' in latest_results}")
+        print(f"🔍 [DEBUG] Has aarsAnalysis: {'aarsAnalysis' in latest_results}")
+        if 'contextualFindings' in latest_results:
+            print(f"🔍 [DEBUG] Contextual findings count: {len(latest_results.get('contextualFindings', []))}")
+        if 'staticFindings' in latest_results:
+            print(f"🔍 [DEBUG] Static findings count: {len(latest_results.get('staticFindings', []))}")
         return jsonify(latest_results)
 
 @app.route('/api/history')
 def get_scan_history():
     """Get scan history"""
+    print(f"🔍 [DEBUG] /api/history called")
+    print(f"🔍 [DEBUG] scan_history length: {len(scan_history)}")
+    for i, scan in enumerate(scan_history):
+        print(f"🔍 [DEBUG] Scan {i}: ID={scan.get('scan_id', 'N/A')}, Has contextualFindings={bool(scan.get('contextualFindings'))}, Has staticFindings={bool(scan.get('staticFindings'))}, Has aivssAnalysis={bool(scan.get('aivssAnalysis'))}, Has aarsAnalysis={bool(scan.get('aarsAnalysis'))}")
     return jsonify(scan_history)
 
 
@@ -160,6 +193,7 @@ def scan_from_upload():
                     scan_result["file_path"] = file.filename
 
                 # Use our existing function to store the results
+                print(f"🔍 [DEBUG] About to store scan results from upload")
                 send_results_to_webapp(scan_result)
                 
                 return jsonify({
@@ -178,10 +212,25 @@ def scan_from_upload():
 @app.route('/api/history/<int:scan_id>')
 def get_scan_by_id(scan_id):
     """Get a specific scan from history by its ID."""
+    print(f"🔍 [DEBUG] /api/history/{scan_id} called")
+    print(f"🔍 [DEBUG] Looking for scan_id: {scan_id}")
+    print(f"🔍 [DEBUG] Available scan IDs: {[s.get('scan_id', 'N/A') for s in scan_history]}")
+    
     scan = next((s for s in scan_history if s.get('scan_id') == scan_id), None)
     if scan:
+        print(f"🔍 [DEBUG] Found scan with ID {scan_id}")
+        print(f"🔍 [DEBUG] Scan keys: {list(scan.keys())}")
+        print(f"🔍 [DEBUG] Has contextualFindings: {'contextualFindings' in scan}")
+        print(f"🔍 [DEBUG] Has staticFindings: {'staticFindings' in scan}")
+        print(f"🔍 [DEBUG] Has aivssAnalysis: {'aivssAnalysis' in scan}")
+        print(f"🔍 [DEBUG] Has aarsAnalysis: {'aarsAnalysis' in scan}")
+        if 'contextualFindings' in scan:
+            print(f"🔍 [DEBUG] Contextual findings count: {len(scan.get('contextualFindings', []))}")
+        if 'staticFindings' in scan:
+            print(f"🔍 [DEBUG] Static findings count: {len(scan.get('staticFindings', []))}")
         return jsonify(scan)
     else:
+        print(f"🔍 [DEBUG] Scan with ID {scan_id} not found")
         return jsonify({"error": "Scan not found"}), 404
 
 if __name__ == '__main__':

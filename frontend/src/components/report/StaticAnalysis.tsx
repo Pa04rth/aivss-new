@@ -15,18 +15,18 @@ export default function StaticAnalysis({ findings }: Props) {
         <h2 className="text-2xl font-bold tracking-tight flex items-center gap-3">
           <ShieldOff className="text-primary" />
           Static Analysis Results
-          <span className="text-sm font-bold bg-muted text-muted-foreground px-2 py-1 rounded-md">
+          <span className="text-sm font-bold bg-gray-100 text-gray-700 px-2 py-1 rounded-md">
             {findings.length} found
           </span>
         </h2>
-        <p className="text-muted-foreground mt-1">
+        <p className="text-gray-700 mt-1">
           Security vulnerabilities detected through automated pattern analysis.
         </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Security Risks Column */}
         <div>
-          <h3 className="font-semibold mb-4">Security Risks:</h3>
+          <h3 className="font-semibold mb-4 text-gray-800">Security Risks:</h3>
           <div className="space-y-4">
             {findings.map((finding, index) => (
               <Card key={index} className="p-4">
@@ -36,8 +36,10 @@ export default function StaticAnalysis({ findings }: Props) {
                   <ShieldAlert size={14} />
                   {finding.severity}
                 </span>
-                <h4 className="font-bold mt-3">{finding.risk}</h4>
-                <p className="text-sm text-muted-foreground mt-1">
+                <h4 className="font-bold mt-3 text-foreground">
+                  {finding.risk}
+                </h4>
+                <p className="text-sm text-foreground mt-1">
                   {finding.risk} detected.
                 </p>
                 <div className="mt-3">
@@ -51,15 +53,17 @@ export default function StaticAnalysis({ findings }: Props) {
         </div>
         {/* Security Recommendations Column */}
         <div>
-          <h3 className="font-semibold mb-4">Security Recommendations:</h3>
+          <h3 className="font-semibold mb-4 text-gray-800">
+            Security Recommendations:
+          </h3>
           <div className="space-y-4">
             {findings.map((finding, index) => (
               <Card key={index} className="p-4 h-full">
-                <h4 className="font-bold">{finding.risk}</h4>
-                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+                <h4 className="font-bold text-foreground">{finding.risk}</h4>
+                <p className="text-sm text-foreground mt-2 leading-relaxed">
                   {finding.recommendation}
                 </p>
-                <div className="mt-4 text-xs text-muted-foreground text-right">
+                <div className="mt-4 text-xs text-gray-700 text-right">
                   Priority:{" "}
                   <span className="font-bold capitalize">
                     {finding.priority}

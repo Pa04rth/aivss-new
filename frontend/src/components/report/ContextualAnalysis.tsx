@@ -38,11 +38,11 @@ export default function ContextualAnalysis({ findings }: Props) {
         <h2 className="text-2xl font-bold tracking-tight flex items-center gap-3">
           <Lightbulb className="text-primary" />
           Context Aware Analysis Results{" "}
-          <span className="text-sm font-bold bg-muted text-muted-foreground px-2 py-1 rounded-md">
+          <span className="text-sm font-bold bg-gray-100 text-gray-700 px-2 py-1 rounded-md">
             {findings.length} found
           </span>
         </h2>
-        <p className="text-muted-foreground mt-1">
+        <p className="text-gray-700 mt-1">
           Advanced security vulnerabilities identified through AI analysis.
         </p>
       </div>
@@ -63,7 +63,7 @@ export default function ContextualAnalysis({ findings }: Props) {
                     {finding.severity}
                   </span>
                   <h3 className="text-xl font-bold">{finding.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-gray-700 leading-relaxed">
                     {finding.description}
                   </p>
                   <div
@@ -84,13 +84,50 @@ export default function ContextualAnalysis({ findings }: Props) {
                 <h4 className="font-bold mb-4 flex items-center gap-2">
                   <Code2 size={18} /> Implement Secure Solution
                 </h4>
-                <div className="prose prose-sm dark:prose-invert max-w-none bg-card p-4 rounded-lg border">
+                <div className="prose prose-sm dark:prose-invert max-w-none bg-card text-card-foreground p-4 rounded-lg border">
                   {/* We use ReactMarkdown to render the implementation guide */}
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {finding.implementation_guide}
-                  </ReactMarkdown>
+                  <div className="text-foreground">
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        p: ({ children }) => (
+                          <p className="text-foreground mb-2">{children}</p>
+                        ),
+                        code: ({ children }) => (
+                          <code className="bg-muted text-foreground px-1 py-0.5 rounded text-sm">
+                            {children}
+                          </code>
+                        ),
+                        pre: ({ children }) => (
+                          <pre className="bg-muted text-foreground p-3 rounded overflow-x-auto">
+                            {children}
+                          </pre>
+                        ),
+                        ul: ({ children }) => (
+                          <ul className="list-disc list-inside text-foreground space-y-1">
+                            {children}
+                          </ul>
+                        ),
+                        ol: ({ children }) => (
+                          <ol className="list-decimal list-inside text-foreground space-y-1">
+                            {children}
+                          </ol>
+                        ),
+                        li: ({ children }) => (
+                          <li className="text-foreground">{children}</li>
+                        ),
+                        strong: ({ children }) => (
+                          <strong className="text-foreground font-semibold">
+                            {children}
+                          </strong>
+                        ),
+                      }}
+                    >
+                      {finding.implementation_guide}
+                    </ReactMarkdown>
+                  </div>
                 </div>
-                <div className="mt-4 text-xs text-muted-foreground text-right">
+                <div className="mt-4 text-xs text-gray-700 text-right">
                   Priority:{" "}
                   <span className="font-bold capitalize">
                     {finding.priority}

@@ -29,6 +29,18 @@ interface ScanResult {
   error?: string;
   timestamp?: string;
   scan_id?: number;
+  // Add comprehensive analysis fields
+  contextualFindings?: any[];
+  staticFindings?: any[];
+  workflowAnalysis?: any;
+  aarsAnalysis?: any;
+  aivssAnalysis?: any;
+  annotatedCode?: Record<string, string>;
+  scanName?: string;
+  scanCreated?: string;
+  scanCompleted?: string;
+  totalFiles?: number;
+  linesOfCode?: number;
 }
 
 export default function UploadAndScan() {

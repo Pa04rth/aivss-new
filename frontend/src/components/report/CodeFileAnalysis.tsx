@@ -64,7 +64,7 @@ export default function CodeFileAnalysis({ codeFiles }: Props) {
             </div>
             <span>Python</span>
           </div>
-          <div className="flex-grow bg-gray-900 text-white p-4 overflow-auto font-mono text-xs">
+          <div className="flex-grow bg-slate-900 text-slate-100 p-4 overflow-auto font-mono text-xs">
             <pre className="whitespace-pre-wrap">{codeFiles[selectedFile]}</pre>
           </div>
         </div>
