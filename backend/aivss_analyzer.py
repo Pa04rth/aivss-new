@@ -69,7 +69,7 @@ class AIVSSResult:
 class AIVSSAnalyzer:
     """Main AIVSS analysis orchestrator"""
     
-    def __init__(self, api_base_url: str = "http://localhost:3001"):
+    def __init__(self, api_base_url: str = "https://api.aivss.parthsohaney.online"):
         self.api_base_url = api_base_url
         self.api_endpoint = f"{api_base_url}/api/calculate"
         
