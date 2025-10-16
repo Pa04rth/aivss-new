@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, use } from "react";
 import { FullScanReport } from "@/lib/types";
 import SecurityReportHeader from "@/components/report/SecurityReportHeader";
 import ContextualAnalysis from "@/components/report/ContextualAnalysis";
@@ -11,31 +11,36 @@ import AIVSSAnalysisComponent from "@/components/report/AIVSSAnalysis";
 import { Loader2 } from "lucide-react";
 
 interface ReportPageProps {
-  params: {
+  params: Promise<{
     scanId: string;
-  };
+  }>;
 }
 
 export default function ReportPage({ params }: ReportPageProps) {
+  // Unwrap the params Promise using React.use()
+  const resolvedParams = use(params);
   const [reportData, setReportData] = useState<FullScanReport | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // We use useCallback to memoize the function
   const fetchReportData = useCallback(async () => {
     // Only fetch if scanId is a valid number
-    if (!params.scanId || isNaN(parseInt(params.scanId))) {
-      console.log("🔍 [DEBUG] Report Page: Invalid scanId:", params.scanId);
+    if (!resolvedParams.scanId || isNaN(parseInt(resolvedParams.scanId))) {
+      console.log(
+        "🔍 [DEBUG] Report Page: Invalid scanId:",
+        resolvedParams.scanId
+      );
       setIsLoading(false);
       return;
     }
 
     console.log(
       "🔍 [DEBUG] Report Page: Fetching data for scanId:",
-      params.scanId
+      resolvedParams.scanId
     );
     setIsLoading(true);
     try {
-      const res = await fetch(`/api/report/${params.scanId}`);
+      const res = await fetch(`/api/report/${resolvedParams.scanId}`);
       if (!res.ok) {
         throw new Error("Failed to fetch report");
       }
@@ -43,7 +48,7 @@ export default function ReportPage({ params }: ReportPageProps) {
 
       console.log(
         "🔍 [DEBUG] Report Page: Received data for scanId:",
-        params.scanId,
+        resolvedParams.scanId,
         {
           scanId: data.scan_id,
           hasContextualFindings: !!data.contextualFindings,
@@ -90,7 +95,7 @@ export default function ReportPage({ params }: ReportPageProps) {
     } finally {
       setIsLoading(false);
     }
-  }, [params.scanId]); // The dependency array now correctly uses params.scanId
+  }, [resolvedParams.scanId]); // The dependency array now correctly uses resolvedParams.scanId
 
   useEffect(() => {
     fetchReportData();
@@ -113,8 +118,8 @@ export default function ReportPage({ params }: ReportPageProps) {
         <h2 className="text-2xl font-bold">Report Not Found</h2>
         <p>
           Could not load the report for Scan ID:{" "}
-          <span className="font-mono">{params.scanId}</span>. It may have failed
-          or been cleared from history.
+          <span className="font-mono">{resolvedParams.scanId}</span>. It may
+          have failed or been cleared from history.
         </p>
       </div>
     );

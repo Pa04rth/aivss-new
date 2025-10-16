@@ -140,13 +140,6 @@ def serve_static(path):
     return send_from_directory('dist', 'index.html')
 
 
-def run_scan(file_path: str) -> dict:
-    # This function will eventually contain the logic from server.py's autoharden_agent
-    # For now, we simulate it.
-    print(f"Simulating scan for: {file_path}")
-    # In the real implementation, this will call the actual scanner
-    # and get a result dictionary.
-    pass # We will replace this in the next step
 
 @app.route('/api/scan-from-upload', methods=['POST'])
 def scan_from_upload():
@@ -168,23 +161,6 @@ def scan_from_upload():
                 file.save(temp_filepath)
 
                 print(f"File saved temporarily to: {temp_filepath}")
-
-                # --- THIS IS WHERE WE WILL CALL OUR SCANNER ---
-                # For now, we'll just send a dummy result
-                # In the next step, we'll replace this with the real scanner call
-                # dummy_result = {
-                #     "success": True,
-                #     "file_path": file.filename, # Show original filename to user
-                #     "constraints_count": 2,
-                #     "risks_count": 1,
-                #     "constraints": [{"description": "Dummy constraint 1", "severity": "low"}],
-                #     "risks": [{"description": "Dummy critical risk", "severity": "critical", "impact": "High"}],
-                #     "hardened_code": ["# Dummy hardened code"],
-                #     "message": f"Successfully analyzed uploaded file {file.filename}"
-                # }
-
-                # # Use our existing function to store the results
-                # send_results_to_webapp(dummy_result)
                 
                 scan_result = run_scan_on_file(temp_filepath)
 

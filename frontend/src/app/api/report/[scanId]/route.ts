@@ -4,9 +4,10 @@ const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5001";
 
 export async function GET(
   request: Request,
-  { params }: { params: { scanId: string } }
+  { params }: { params: Promise<{ scanId: string }> }
 ) {
-  const scanId = params.scanId;
+  const resolvedParams = await params;
+  const scanId = resolvedParams.scanId;
   console.log(`🔍 [DEBUG] Frontend API: /api/report/${scanId} called`);
   try {
     console.log(

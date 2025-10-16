@@ -451,7 +451,7 @@ class AIVSSAnalyzer:
 
 # Convenience function for easy integration
 def analyze_aivss(code: str, findings: List[Dict], workflow_analysis: Dict, 
-                 api_base_url: str = "http://localhost:3001") -> Dict[str, Any]:
+                 api_base_url: str = "https://api.aivss.parthsohaney.online") -> Dict[str, Any]:
     """
     Convenience function to perform AIVSS analysis
     

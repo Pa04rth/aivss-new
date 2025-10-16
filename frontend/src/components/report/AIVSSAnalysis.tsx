@@ -92,13 +92,13 @@ const AIVSSAnalysisComponent: React.FC<AIVSSAnalysisProps> = ({
                 <div className="text-2xl font-bold mb-2">AIVSS</div>
                 <div
                   className={`text-3xl font-bold mb-2 ${getScoreColor(
-                    scores.aivssScore
+                    scores.aivssScore || 0
                   )}`}
                 >
-                  {scores.aivssScore.toFixed(1)}
+                  {scores.aivssScore?.toFixed(1) || "N/A"}
                 </div>
-                <Badge className={getScoreColor(scores.aivssScore)}>
-                  {getScoreLabel(scores.aivssScore)}
+                <Badge className={getScoreColor(scores.aivssScore || 0)}>
+                  {getScoreLabel(scores.aivssScore || 0)}
                 </Badge>
                 <p className="text-sm text-muted-foreground mt-2">
                   AI Vulnerability Score
@@ -110,13 +110,13 @@ const AIVSSAnalysisComponent: React.FC<AIVSSAnalysisProps> = ({
                 <div className="text-2xl font-bold mb-2">AARS</div>
                 <div
                   className={`text-3xl font-bold mb-2 ${getScoreColor(
-                    scores.aarsScore
+                    scores.aarsScore || 0
                   )}`}
                 >
-                  {scores.aarsScore.toFixed(1)}
+                  {scores.aarsScore?.toFixed(1) || "N/A"}
                 </div>
-                <Badge className={getScoreColor(scores.aarsScore)}>
-                  {getScoreLabel(scores.aarsScore)}
+                <Badge className={getScoreColor(scores.aarsScore || 0)}>
+                  {getScoreLabel(scores.aarsScore || 0)}
                 </Badge>
                 <p className="text-sm text-muted-foreground mt-2">
                   AI Agent Risk Score
@@ -128,13 +128,13 @@ const AIVSSAnalysisComponent: React.FC<AIVSSAnalysisProps> = ({
                 <div className="text-2xl font-bold mb-2">CVSS</div>
                 <div
                   className={`text-3xl font-bold mb-2 ${getScoreColor(
-                    scores.cvssScore
+                    scores.cvssScore || 0
                   )}`}
                 >
-                  {scores.cvssScore.toFixed(1)}
+                  {scores.cvssScore?.toFixed(1) || "N/A"}
                 </div>
-                <Badge className={getScoreColor(scores.cvssScore)}>
-                  {getScoreLabel(scores.cvssScore)}
+                <Badge className={getScoreColor(scores.cvssScore || 0)}>
+                  {getScoreLabel(scores.cvssScore || 0)}
                 </Badge>
                 <p className="text-sm text-muted-foreground mt-2">
                   Traditional Security Score
