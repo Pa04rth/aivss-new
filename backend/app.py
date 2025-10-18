@@ -9,11 +9,25 @@ import uuid
 from dotenv import load_dotenv
 from scanner_logic import run_scan_on_file
 
+# Import new n8n functionality
+from api.n8n_routes import n8n_bp
+from api.auth_routes import auth_bp
+from database.connection_manager import DatabaseManager, ScanResultManager
+from middleware.auth import require_auth, get_current_user
+
 # Load environment variables
 load_dotenv()
 app = Flask(__name__, static_folder='dist', static_url_path='')
 
-# Global variables to store scan results and history
+# Register blueprints
+app.register_blueprint(n8n_bp)
+app.register_blueprint(auth_bp)
+
+# Initialize database and managers
+db_manager = DatabaseManager()
+scan_result_manager = ScanResultManager()
+
+# Global variables to store scan results and history (DEPRECATED - will be removed)
 latest_results = {}
 scan_history = []
 scan_counter = 0
@@ -53,67 +67,77 @@ def serve_react_app():
     return send_from_directory('dist', 'index.html')
 
 @app.route('/api/scan', methods=['POST'])
+@require_auth
 def receive_scan_results():
     """Receive scan results from MCP server"""
-    global latest_results, scan_history, scan_counter
-    
     try:
         data = request.get_json()
+        user_info = get_current_user()
         
-        # Add timestamp and scan ID
+        if not user_info:
+            return jsonify({"status": "error", "message": "User not authenticated"}), 401
+        
+        # Add timestamp and user info
         data['timestamp'] = datetime.now().isoformat()
-        data['scan_id'] = scan_counter
-        scan_counter += 1
+        data['user_id'] = user_info['user_id']
         
-        # Store as latest results
-        latest_results = data
+        # Store in database
+        scan_id = scan_result_manager.store_scan_result(
+            user_id=user_info['user_id'],
+            scan_data=data
+        )
         
-        # Add to history
-        scan_history.append(data)
+        data['scan_id'] = scan_id
         
-        # Keep only last 10 scans in history
-        if len(scan_history) > 10:
-            scan_history.pop(0)
-            
-        print(f"Received scan results: {data.get('file_path', 'Unknown file')}")
-        return jsonify({"status": "success", "message": "Results received"})
+        print(f"Received scan results for user {user_info['user_id']}: {data.get('file_path', 'Unknown file')}")
+        return jsonify({"status": "success", "message": "Results received", "scan_id": scan_id})
         
     except Exception as e:
         print(f"❌ Error receiving scan results: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route('/api/results')
+@require_auth
 def get_latest_results():
-    """Get the latest scan results"""
-    print(f"🔍 [DEBUG] /api/results called")
-    print(f"🔍 [DEBUG] latest_results exists: {bool(latest_results)}")
-    
-    if not latest_results:
-        # If there are no results, return a structured "not found" response
-        print(f"🔍 [DEBUG] No results available, returning not found")
-        return jsonify({"success": False, "message": "No scan results available yet."})
-    else:
-        # If there are results, return them as before
-        print(f"🔍 [DEBUG] Returning latest_results with scan_id: {latest_results.get('scan_id', 'N/A')}")
-        print(f"🔍 [DEBUG] Latest results keys: {list(latest_results.keys())}")
-        print(f"🔍 [DEBUG] Has contextualFindings: {'contextualFindings' in latest_results}")
-        print(f"🔍 [DEBUG] Has staticFindings: {'staticFindings' in latest_results}")
-        print(f"🔍 [DEBUG] Has aivssAnalysis: {'aivssAnalysis' in latest_results}")
-        print(f"🔍 [DEBUG] Has aarsAnalysis: {'aarsAnalysis' in latest_results}")
-        if 'contextualFindings' in latest_results:
-            print(f"🔍 [DEBUG] Contextual findings count: {len(latest_results.get('contextualFindings', []))}")
-        if 'staticFindings' in latest_results:
-            print(f"🔍 [DEBUG] Static findings count: {len(latest_results.get('staticFindings', []))}")
-        return jsonify(latest_results)
+    """Get the latest scan results for the authenticated user"""
+    try:
+        user_info = get_current_user()
+        if not user_info:
+            return jsonify({"success": False, "message": "User not authenticated"}), 401
+        
+        # Get latest scan for user
+        user_scans = scan_result_manager.get_user_scan_results(user_info['user_id'], limit=1)
+        
+        if not user_scans:
+            return jsonify({"success": False, "message": "No scan results available yet."})
+        
+        latest_scan = user_scans[0]
+        print(f"🔍 [DEBUG] Returning latest scan for user {user_info['user_id']}: {latest_scan.get('scan_id', 'N/A')}")
+        
+        return jsonify(latest_scan)
+        
+    except Exception as e:
+        print(f"❌ Error getting latest results: {e}")
+        return jsonify({"success": False, "message": "Failed to fetch results"}), 500
 
 @app.route('/api/history')
+@require_auth
 def get_scan_history():
-    """Get scan history"""
-    print(f"🔍 [DEBUG] /api/history called")
-    print(f"🔍 [DEBUG] scan_history length: {len(scan_history)}")
-    for i, scan in enumerate(scan_history):
-        print(f"🔍 [DEBUG] Scan {i}: ID={scan.get('scan_id', 'N/A')}, Has contextualFindings={bool(scan.get('contextualFindings'))}, Has staticFindings={bool(scan.get('staticFindings'))}, Has aivssAnalysis={bool(scan.get('aivssAnalysis'))}, Has aarsAnalysis={bool(scan.get('aarsAnalysis'))}")
-    return jsonify(scan_history)
+    """Get scan history for the authenticated user"""
+    try:
+        user_info = get_current_user()
+        if not user_info:
+            return jsonify({"error": "User not authenticated"}), 401
+        
+        # Get user's scan history
+        user_scans = scan_result_manager.get_user_scan_results(user_info['user_id'], limit=50)
+        
+        print(f"🔍 [DEBUG] Returning {len(user_scans)} scans for user {user_info['user_id']}")
+        return jsonify(user_scans)
+        
+    except Exception as e:
+        print(f"❌ Error getting scan history: {e}")
+        return jsonify({"error": "Failed to fetch scan history"}), 500
 
 
 
@@ -142,9 +166,14 @@ def serve_static(path):
 
 
 @app.route('/api/scan-from-upload', methods=['POST'])
+@require_auth
 def scan_from_upload():
     """Receives a file from the frontend, saves it temporarily, and scans it."""
     try:
+        user_info = get_current_user()
+        if not user_info:
+            return jsonify({"status": "error", "message": "User not authenticated"}), 401
+        
         if 'file' not in request.files:
             return jsonify({"status": "error", "message": "No file part in the request"}), 400
 
@@ -168,15 +197,23 @@ def scan_from_upload():
                 if "file_path" in scan_result:
                     scan_result["file_path"] = file.filename
 
-                # Use our existing function to store the results
-                print(f"🔍 [DEBUG] About to store scan results from upload")
-                send_results_to_webapp(scan_result)
+                # Add user info and timestamp
+                scan_result['timestamp'] = datetime.now().isoformat()
+                scan_result['user_id'] = user_info['user_id']
+                
+                # Store in database
+                scan_id = scan_result_manager.store_scan_result(
+                    user_id=user_info['user_id'],
+                    scan_data=scan_result
+                )
+                
+                scan_result['scan_id'] = scan_id
                 
                 return jsonify({
-                        "status": "success",
-                        "message": "File received and scan initiated.",
-                        "scan_id": scan_result.get("scan_id") # <-- ADD THIS LINE
-                    })
+                    "status": "success",
+                    "message": "File received and scan initiated.",
+                    "scan_id": scan_id
+                })
 
         return jsonify({"status": "error", "message": "Invalid file type. Only .py files are accepted."}), 400
 
@@ -186,28 +223,26 @@ def scan_from_upload():
 
 
 @app.route('/api/history/<int:scan_id>')
+@require_auth
 def get_scan_by_id(scan_id):
-    """Get a specific scan from history by its ID."""
-    print(f"🔍 [DEBUG] /api/history/{scan_id} called")
-    print(f"🔍 [DEBUG] Looking for scan_id: {scan_id}")
-    print(f"🔍 [DEBUG] Available scan IDs: {[s.get('scan_id', 'N/A') for s in scan_history]}")
-    
-    scan = next((s for s in scan_history if s.get('scan_id') == scan_id), None)
-    if scan:
-        print(f"🔍 [DEBUG] Found scan with ID {scan_id}")
-        print(f"🔍 [DEBUG] Scan keys: {list(scan.keys())}")
-        print(f"🔍 [DEBUG] Has contextualFindings: {'contextualFindings' in scan}")
-        print(f"🔍 [DEBUG] Has staticFindings: {'staticFindings' in scan}")
-        print(f"🔍 [DEBUG] Has aivssAnalysis: {'aivssAnalysis' in scan}")
-        print(f"🔍 [DEBUG] Has aarsAnalysis: {'aarsAnalysis' in scan}")
-        if 'contextualFindings' in scan:
-            print(f"🔍 [DEBUG] Contextual findings count: {len(scan.get('contextualFindings', []))}")
-        if 'staticFindings' in scan:
-            print(f"🔍 [DEBUG] Static findings count: {len(scan.get('staticFindings', []))}")
+    """Get a specific scan from history by its ID for the authenticated user."""
+    try:
+        user_info = get_current_user()
+        if not user_info:
+            return jsonify({"error": "User not authenticated"}), 401
+        
+        # Get specific scan for user
+        scan = scan_result_manager.get_scan_by_id(scan_id, user_info['user_id'])
+        
+        if not scan:
+            return jsonify({"error": "Scan not found"}), 404
+        
+        print(f"🔍 [DEBUG] Found scan {scan_id} for user {user_info['user_id']}")
         return jsonify(scan)
-    else:
-        print(f"🔍 [DEBUG] Scan with ID {scan_id} not found")
-        return jsonify({"error": "Scan not found"}), 404
+        
+    except Exception as e:
+        print(f"❌ Error getting scan by ID: {e}")
+        return jsonify({"error": "Failed to fetch scan"}), 500
 
 if __name__ == '__main__':
     # Create dist directory if it doesn't exist

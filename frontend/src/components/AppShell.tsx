@@ -17,7 +17,11 @@ import {
   Unlock,
   CheckCircle,
   UploadCloud,
+  LogOut,
+  User,
 } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
+import { getCurrentUser, logout, User as AuthUser } from "@/lib/auth";
 
 // TYPE DEFINITION FOR A SINGLE NAVIGATION LINK
 interface NavigationItem {
@@ -36,8 +40,11 @@ interface NavigationSection {
 export default function AppShell({ children }: { children: ReactNode }) {
   const [isProjectsDropdownOpen, setIsProjectsDropdownOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState("Multi Agent System");
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const userDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -47,6 +54,12 @@ export default function AppShell({ children }: { children: ReactNode }) {
       ) {
         setIsProjectsDropdownOpen(false);
       }
+      if (
+        userDropdownRef.current &&
+        !userDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsUserDropdownOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -54,12 +67,25 @@ export default function AppShell({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  useEffect(() => {
+    // Load user info
+    console.log("Loading user info...");
+    getCurrentUser()
+      .then((userData) => {
+        console.log("User data loaded:", userData);
+        setUser(userData);
+      })
+      .catch((error) => {
+        console.error("Failed to load user:", error);
+      });
+  }, []);
+
   // CORRECTLY TYPED NAVIGATION ARRAY
   const navigation: NavigationSection[] = [
     {
       section: "Overview Analysis",
       items: [
-        { name: "Dashboard", href: "/", icon: Activity },
+        { name: "Dashboard", href: "/dashboard", icon: Activity },
         { name: "System Schema", href: "/system-schema", icon: LinkIcon },
         { name: "My Scans", href: "/my-scans", icon: Folder },
       ],
@@ -108,16 +134,12 @@ export default function AppShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen">
       <div className="flex h-screen">
         {/* Sidebar */}
-        <div className="w-64 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+        <div className="w-64 theme-sidebar border-r border-gray-200 dark:border-gray-700 flex flex-col">
           <div className="p-4 border-b border-gray-200 dark:border-gray-700">
             <div>
-              <h1 className="text-lg font-bold text-gray-900 dark:text-gray-100">
-                Hive
-              </h1>
-              <p className="text-xs text-gray-900 dark:text-gray-100">
-                Agentic Security Scanner
-              </p>
-              <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
+              <h1 className="text-lg font-bold theme-text">Hive</h1>
+              <p className="text-xs theme-text">Agentic Security Scanner</p>
+              <p className="text-xs text-muted-foreground mt-2">
                 This is a proof of concept of our multi agent security scanner.
                 We love ideas and recommendations of what you'd like to see in
                 such a tool!
@@ -125,7 +147,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
                   href="https://www.aegentdev.com/contact"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 underline hover:text-blue-800 transition-colors"
+                  className="text-primary underline hover:text-primary/80 transition-colors"
                 >
                   {" "}
                   Click here to contact us!
@@ -138,7 +160,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <div className="p-4">
             <Link
               href="/scan-file"
-              className="flex items-center justify-center w-full px-4 py-2.5 text-sm font-semibold bg-blue-600 text-white rounded-md hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-sm hover:shadow-md"
+              className="flex items-center justify-center w-full px-4 py-2.5 text-sm font-semibold theme-primary rounded-md hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-sm hover:shadow-md"
             >
               <UploadCloud size={18} className="mr-2" />
               Scan File
@@ -148,7 +170,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <nav className="flex-1 p-4 space-y-6 overflow-y-auto">
             {navigation.map((section) => (
               <div key={section.section}>
-                <h3 className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-3">
+                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
                   {section.section}
                 </h3>
                 <ul className="space-y-1">
@@ -165,8 +187,8 @@ export default function AppShell({ children }: { children: ReactNode }) {
                             transition-all duration-200 ease-in-out
                             ${
                               isActive
-                                ? "bg-blue-600 text-white shadow-md scale-[1.02]"
-                                : "text-gray-600 dark:text-gray-400 hover:bg-blue-600 hover:text-white hover:scale-[1.02] hover:shadow-md active:scale-[0.98]"
+                                ? "theme-primary shadow-md scale-[1.02]"
+                                : "text-muted-foreground hover:theme-primary hover:scale-[1.02] hover:shadow-md active:scale-[0.98]"
                             }
                           `}
                         >
@@ -182,11 +204,11 @@ export default function AppShell({ children }: { children: ReactNode }) {
                               className={`px-2 py-1 text-xs rounded-full font-semibold transition-colors duration-200 ${
                                 item.tag === "Critical"
                                   ? isActive
-                                    ? "bg-red-100 text-red-800"
-                                    : "bg-red-100 text-red-800 group-hover:bg-red-200"
+                                    ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                                    : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 group-hover:bg-red-200 dark:group-hover:bg-red-800"
                                   : isActive
-                                  ? "bg-yellow-100 text-yellow-800"
-                                  : "bg-yellow-100 text-yellow-800 group-hover:bg-yellow-200"
+                                  ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                                  : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 group-hover:bg-yellow-200 dark:group-hover:bg-yellow-800"
                               }`}
                             >
                               {item.tag}
@@ -202,12 +224,12 @@ export default function AppShell({ children }: { children: ReactNode }) {
           </nav>
 
           <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-xs text-gray-600 dark:text-gray-400">
+            <p className="text-xs text-muted-foreground">
               <a
                 href="https://www.aegentdev.com/blog"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 underline hover:text-blue-800 transition-colors duration-200"
+                className="text-primary underline hover:text-primary/80 transition-colors duration-200"
               >
                 Click here to check out our research and blogs!
               </a>
@@ -217,10 +239,77 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
         {/* Main content */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-            {/* Header content will go here */}
+          <header className="theme-card border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <h2 className="text-lg font-semibold theme-text">
+                  {pathname === "/"
+                    ? "Dashboard"
+                    : pathname === "/scan-file"
+                    ? "Security Scanner"
+                    : pathname === "/my-scans"
+                    ? "My Scans"
+                    : pathname === "/system-schema"
+                    ? "System Schema"
+                    : pathname === "/data-poisoning"
+                    ? "Data Poisoning"
+                    : pathname === "/jailbreaks"
+                    ? "Jailbreaks"
+                    : pathname === "/hardening-tools"
+                    ? "Hardening Tools"
+                    : pathname === "/prompt-hardening"
+                    ? "Prompt Hardening"
+                    : pathname === "/risk-reports"
+                    ? "Risk Reports"
+                    : pathname === "/system-monitor"
+                    ? "System Monitor"
+                    : "Security Scanner"}
+                </h2>
+              </div>
+              <div className="flex items-center space-x-2">
+                <ThemeToggle />
+
+                {/* User dropdown */}
+                <div className="relative" ref={userDropdownRef}>
+                  <button
+                    onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+                    className="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    <User
+                      size={18}
+                      className="text-gray-600 dark:text-gray-400"
+                    />
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {user?.email || "User"}
+                    </span>
+                    <ChevronDown size={16} className="text-gray-500" />
+                  </button>
+
+                  {isUserDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50">
+                      <div className="py-1">
+                        <div className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">
+                          <div className="font-medium">{user?.email}</div>
+                          <div className="text-xs text-gray-500">Signed in</div>
+                        </div>
+                        <button
+                          onClick={() => {
+                            logout();
+                            setIsUserDropdownOpen(false);
+                          }}
+                          className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        >
+                          <LogOut size={16} className="mr-2" />
+                          Sign out
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </header>
-          <main className="flex-1 overflow-auto bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+          <main className="flex-1 overflow-auto theme-bg theme-text">
             {children}
           </main>
         </div>

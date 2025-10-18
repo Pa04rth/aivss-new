@@ -1,82 +1,120 @@
 @import "tailwindcss";
 
-@theme {
-  --color-background: 0 0% 100%;
-  --color-foreground: 222.2 84% 4.9%;
-  --color-card: 0 0% 100%;
-  --color-card-foreground: 222.2 84% 4.9%;
-  --color-popover: 0 0% 100%;
-  --color-popover-foreground: 222.2 84% 4.9%;
-  --color-primary: 221.2 83.2% 53.3%;
-  --color-primary-foreground: 210 40% 98%;
-  --color-secondary: 210 40% 96%;
-  --color-secondary-foreground: 222.2 84% 4.9%;
-  --color-muted: 210 40% 96%;
-  --color-muted-foreground: 215.4 16.3% 46.9%;
-  --color-accent: 210 40% 96%;
-  --color-accent-foreground: 222.2 84% 4.9%;
-  --color-destructive: 0 84.2% 60.2%;
-  --color-destructive-foreground: 210 40% 98%;
-  --color-border: 214.3 31.8% 91.4%;
-  --color-input: 214.3 31.8% 91.4%;
-  --color-ring: 221.2 83.2% 53.3%;
+:root {
+  /* Light theme colors (default) */
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 221.2 83.2% 53.3%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222.2 84% 4.9%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 222.2 84% 4.9%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 221.2 83.2% 53.3%;
   --radius: 0.5rem;
 
-  /* Sidebar colors */
-  --color-sidebar: 0 0% 98%;
-  --color-sidebar-foreground: 222.2 84% 4.9%;
-  --color-sidebar-primary: 221.2 83.2% 53.3%;
-  --color-sidebar-primary-foreground: 210 40% 98%;
-  --color-sidebar-accent: 210 40% 96%;
-  --color-sidebar-accent-foreground: 222.2 84% 4.9%;
-  --color-sidebar-border: 214.3 31.8% 91.4%;
-  --color-sidebar-ring: 221.2 83.2% 53.3%;
+  /* Sidebar colors for light theme */
+  --sidebar: 0 0% 98%;
+  --sidebar-foreground: 222.2 84% 4.9%;
+  --sidebar-primary: 221.2 83.2% 53.3%;
+  --sidebar-primary-foreground: 210 40% 98%;
+  --sidebar-accent: 210 40% 96%;
+  --sidebar-accent-foreground: 222.2 84% 4.9%;
+  --sidebar-border: 214.3 31.8% 91.4%;
+  --sidebar-ring: 221.2 83.2% 53.3%;
 }
 
-@media (prefers-color-scheme: dark) {
-  @theme {
-    --color-background: 222.2 84% 4.9%;
-    --color-foreground: 210 40% 98%;
-    --color-card: 222.2 84% 4.9%;
-    --color-card-foreground: 210 40% 98%;
-    --color-popover: 222.2 84% 4.9%;
-    --color-popover-foreground: 210 40% 98%;
-    --color-primary: 217.2 91.2% 59.8%;
-    --color-primary-foreground: 222.2 84% 4.9%;
-    --color-secondary: 217.2 32.6% 17.5%;
-    --color-secondary-foreground: 210 40% 98%;
-    --color-muted: 217.2 32.6% 17.5%;
-    --color-muted-foreground: 215 20.2% 65.1%;
-    --color-accent: 217.2 32.6% 17.5%;
-    --color-accent-foreground: 210 40% 98%;
-    --color-destructive: 0 62.8% 30.6%;
-    --color-destructive-foreground: 210 40% 98%;
-    --color-border: 217.2 32.6% 17.5%;
-    --color-input: 217.2 32.6% 17.5%;
-    --color-ring: 224.3 76.3% 94.1%;
+.dark {
+  /* Dark theme colors */
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 222.2 84% 4.9%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 224.3 76.3% 94.1%;
 
-    /* Sidebar colors for dark mode */
-    --color-sidebar: 222.2 84% 4.9%;
-    --color-sidebar-foreground: 210 40% 98%;
-    --color-sidebar-primary: 217.2 91.2% 59.8%;
-    --color-sidebar-primary-foreground: 222.2 84% 4.9%;
-    --color-sidebar-accent: 217.2 32.6% 17.5%;
-    --color-sidebar-accent-foreground: 210 40% 98%;
-    --color-sidebar-border: 217.2 32.6% 17.5%;
-    --color-sidebar-ring: 224.3 76.3% 94.1%;
+  /* Sidebar colors for dark theme */
+  --sidebar: 222.2 84% 4.9%;
+  --sidebar-foreground: 210 40% 98%;
+  --sidebar-primary: 217.2 91.2% 59.8%;
+  --sidebar-primary-foreground: 222.2 84% 4.9%;
+  --sidebar-accent: 217.2 32.6% 17.5%;
+  --sidebar-accent-foreground: 210 40% 98%;
+  --sidebar-border: 217.2 32.6% 17.5%;
+  --sidebar-ring: 224.3 76.3% 94.1%;
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  html {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
   }
 }
 
-* {
-  border-color: theme(colors.border);
+/* Custom theme-aware classes for better visibility */
+.theme-bg {
+  background-color: hsl(var(--background));
 }
 
-html {
-  background-color: theme(colors.background);
-  color: theme(colors.foreground);
+.theme-text {
+  color: hsl(var(--foreground));
 }
 
-body {
-  background-color: theme(colors.background);
-  color: theme(colors.foreground);
+.theme-card {
+  background-color: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  border: 1px solid hsl(var(--border));
+}
+
+.theme-sidebar {
+  background-color: hsl(var(--sidebar));
+  color: hsl(var(--sidebar-foreground));
+  border-color: hsl(var(--sidebar-border));
+}
+
+.theme-primary {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.theme-secondary {
+  background-color: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
+}
+
+.theme-muted {
+  background-color: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
 }

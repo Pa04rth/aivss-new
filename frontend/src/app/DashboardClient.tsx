@@ -14,6 +14,7 @@ import {
   Eye,
   Power,
 } from "lucide-react";
+import { authenticatedFetch } from "@/lib/auth";
 import { FullScanReport } from "@/lib/types";
 import { calculateRiskScore } from "@/lib/scoring";
 import StatCard from "@/components/dashboard/StatCard";
@@ -44,8 +45,8 @@ export default function DashboardClient({
     try {
       console.log("🔍 [DEBUG] Dashboard: Fetching data...");
       const [resultsRes, historyRes] = await Promise.all([
-        fetch("/api/results"),
-        fetch("/api/history"),
+        authenticatedFetch("/api/results"),
+        authenticatedFetch("/api/history"),
       ]);
       const resultsData = await resultsRes.json();
       const historyData = await historyRes.json();
@@ -65,7 +66,7 @@ export default function DashboardClient({
         "🔍 [DEBUG] Dashboard: History data length:",
         historyData.length
       );
-      historyData.forEach((scan, index) => {
+      historyData.forEach((scan: any, index: number) => {
         console.log(`🔍 [DEBUG] Dashboard: History scan ${index}:`, {
           scanId: scan.scan_id,
           hasContextualFindings: !!scan.contextualFindings,

@@ -1,41 +1,36 @@
-import DashboardClient from "./DashboardClient";
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
 const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5001";
 
-async function getScanResults() {
-  try {
-    const res = await fetch(`${BACKEND_URL}/api/results`, {
-      cache: "no-store",
-    });
-    if (!res.ok) return { success: false, message: "Failed to fetch" };
-    return res.json();
-  } catch (e) {
-    return { success: false, message: "Failed to connect to backend" };
+export default async function HomePage() {
+  const cookieStore = await cookies();
+  const authToken = cookieStore.get("auth_token")?.value;
+
+  // If no token, go to landing
+  if (!authToken) {
+    redirect("/landing");
   }
-}
 
-async function getScanHistory() {
+  // If token exists, validate it with backend
   try {
-    const res = await fetch(`${BACKEND_URL}/api/history`, {
-      cache: "no-store",
+    const response = await fetch(`${BACKEND_URL}/api/auth/me`, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
+      },
     });
-    if (!res.ok) return [];
-    return res.json();
-  } catch (e) {
-    return [];
+
+    if (response.ok) {
+      // Token is valid, go to dashboard
+      redirect("/dashboard");
+    } else {
+      // Token is invalid, clear it and go to landing
+      redirect("/landing");
+    }
+  } catch (error) {
+    // Backend not available or other error, go to landing
+    console.error("Auth validation error:", error);
+    redirect("/landing");
   }
-}
-
-export default async function DashboardPage() {
-  // Fetch data on the server before the page is rendered
-  const initialScanResults = await getScanResults();
-  const initialScanHistory = await getScanHistory();
-
-  // Pass the initial data as props to the client component
-  return (
-    <DashboardClient
-      initialScanResults={initialScanResults}
-      initialScanHistory={initialScanHistory}
-    />
-  );
 }

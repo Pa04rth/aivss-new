@@ -1,0 +1,31 @@
+# Database Configuration
+DATABASE_URL=postgresql://user:password@host.neon.tech/dbname?sslmode=require
+
+# OAuth Configuration
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GITHUB_CLIENT_ID=your_github_client_id
+GITHUB_CLIENT_SECRET=your_github_client_secret
+
+# JWT Configuration
+JWT_SECRET_KEY=your_jwt_secret_key_here
+
+# Encryption Key (generate a secure key for production)
+ENCRYPTION_KEY=your_encryption_key_here
+
+# n8n OAuth Configuration
+N8N_CLIENT_ID=your_n8n_client_id
+N8N_CLIENT_SECRET=your_n8n_client_secret
+N8N_REDIRECT_URI=http://localhost:3000/api/n8n/callback
+N8N_AUTH_URL=https://app.n8n.cloud/oauth/authorize
+N8N_TOKEN_URL=https://app.n8n.cloud/oauth/token
+
+# Existing configuration
+GOOGLE_API_KEY=your_gemini_api_key_here
+
+# Frontend URL (for OAuth redirects)
+FRONTEND_URL=http://localhost:3000
+BACKEND_URL=http://localhost:5001
+
+# Optional: Logging level
+LOG_LEVEL=INFO
