@@ -5,10 +5,27 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileCode, FileText, CheckCircle } from "lucide-react";
 
 interface Props {
-  codeFiles: Record<string, string>;
+  codeFiles?: Record<string, string> | null;
 }
 
 export default function CodeFileAnalysis({ codeFiles }: Props) {
+  // Handle undefined or null codeFiles
+  if (!codeFiles || typeof codeFiles !== "object") {
+    return (
+      <div className="space-y-8">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight flex items-center gap-3">
+            <FileCode className="text-blue-600 dark:text-blue-400" />
+            Code Files Analysis
+          </h2>
+          <div className="bg-gray-500/10 text-gray-700 dark:text-gray-400 text-sm rounded-lg p-3 flex items-center gap-2 mt-4">
+            <FileText size={16} /> No code files available for this scan.
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const fileNames = Object.keys(codeFiles);
   const [selectedFile, setSelectedFile] = useState(fileNames[0] || null);
 

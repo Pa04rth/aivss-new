@@ -10,16 +10,6 @@ export default function ScanInterface() {
 
   return (
     <div className="space-y-8 max-w-3xl mx-auto">
-      <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
-          Upload Codebase
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Select a Python file or connect automation platform for security
-          analysis
-        </p>
-      </div>
-
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="python">Python Files</TabsTrigger>

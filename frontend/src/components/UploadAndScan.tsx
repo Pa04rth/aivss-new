@@ -14,6 +14,7 @@ import {
   Power,
 } from "lucide-react";
 import ScanDetailsModal from "./ScanDetailsModal";
+import { authenticatedFetch } from "@/lib/auth";
 
 type ScanState = "idle" | "uploading" | "polling" | "completed" | "error";
 
@@ -88,7 +89,7 @@ export default function UploadAndScan() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("/api/upload-and-scan", {
+      const response = await authenticatedFetch("/api/upload-and-scan", {
         method: "POST",
         body: formData,
       });
@@ -119,7 +120,7 @@ export default function UploadAndScan() {
     }, 1000);
     const poller = setInterval(async () => {
       try {
-        const response = await fetch("/api/history");
+        const response = await authenticatedFetch("/api/history");
         if (response.ok) {
           const history = await response.json();
           const foundScan = history.find(
@@ -160,7 +161,10 @@ export default function UploadAndScan() {
     case "completed":
       if (!completedScan || !startTime) return null; // Should not happen
       const totalTime = Math.floor(
-        (new Date(completedScan.timestamp!).getTime() - startTime.getTime()) /
+        (new Date(
+          completedScan.scanCompleted || completedScan.timestamp!
+        ).getTime() -
+          startTime.getTime()) /
           1000
       );
       return (
@@ -181,7 +185,9 @@ export default function UploadAndScan() {
                 STARTED
               </p>
               <p className="text-2xl font-bold mt-2">
-                {startTime.toLocaleTimeString()}
+                {new Date(
+                  completedScan.scanCreated || completedScan.timestamp!
+                ).toLocaleTimeString()}
               </p>
             </div>
             <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, use } from "react";
 import { FullScanReport } from "@/lib/types";
+import { authenticatedFetch } from "@/lib/auth";
 import SecurityReportHeader from "@/components/report/SecurityReportHeader";
 import ContextualAnalysis from "@/components/report/ContextualAnalysis";
 import StaticAnalysis from "@/components/report/StaticAnalysis";
@@ -44,7 +45,7 @@ export default function ReportPage({ params }: ReportPageProps) {
     setIsLoading(true);
     try {
       const res = await authenticatedFetch(
-        `/api/report/${resolvedParams.scanId}`
+        `/api/history/${resolvedParams.scanId}`
       );
       if (!res.ok) {
         throw new Error("Failed to fetch report");
@@ -93,7 +94,19 @@ export default function ReportPage({ params }: ReportPageProps) {
         console.log("🔍 [DEBUG] Report Page: No AARS Analysis found in data");
       }
 
-      setReportData(data);
+      // Handle nested scanData structure
+      const processedData = data.scanData || data;
+
+      console.log("🔍 [DEBUG] Report Page: Processed data structure:", {
+        hasScanData: !!data.scanData,
+        hasAnnotatedCode: !!processedData.annotatedCode,
+        annotatedCodeKeys: processedData.annotatedCode
+          ? Object.keys(processedData.annotatedCode)
+          : [],
+        processedDataKeys: Object.keys(processedData),
+      });
+
+      setReportData(processedData);
     } catch (error) {
       console.error("Error fetching report data:", error);
       setReportData(null);

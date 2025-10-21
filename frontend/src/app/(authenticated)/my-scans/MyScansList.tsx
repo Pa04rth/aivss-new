@@ -27,6 +27,18 @@ interface ScanResult {
   error?: string;
   timestamp?: string;
   scan_id?: number;
+  // Add comprehensive analysis fields
+  contextualFindings?: any[];
+  staticFindings?: any[];
+  workflowAnalysis?: any;
+  aarsAnalysis?: any;
+  aivssAnalysis?: any;
+  annotatedCode?: Record<string, string>;
+  scanName?: string;
+  scanCreated?: string;
+  scanCompleted?: string;
+  totalFiles?: number;
+  linesOfCode?: number;
 }
 interface MyScansClientProps {
   initialScanHistory?: ScanResult[];
@@ -51,11 +63,14 @@ export default function MyScansClient({
           Array.isArray(data)
             ? data.sort(
                 (a, b) =>
-                  new Date(b.timestamp).getTime() -
-                  new Date(a.timestamp).getTime()
+                  new Date(b.scanCompleted || b.timestamp).getTime() -
+                  new Date(a.scanCompleted || a.timestamp).getTime()
               )
             : []
         );
+      } else {
+        console.error("Failed to fetch scan history:", response.status);
+        setScanHistory([]);
       }
     } catch (error) {
       console.error("Failed to fetch scan history", error);
@@ -104,7 +119,12 @@ export default function MyScansClient({
           <SkeletonScanHistory />
         ) : scanHistory.length > 0 ? (
           scanHistory.map((scan) => {
-            const { score, level, color } = calculateRiskScore(scan.risks);
+            const allRisks = [
+              ...(scan.contextualFindings || []),
+              ...(scan.staticFindings || []),
+              ...(scan.risks || []),
+            ];
+            const { score, level, color } = calculateRiskScore(allRisks);
 
             return (
               <div
@@ -114,10 +134,12 @@ export default function MyScansClient({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <h3 className="font-bold text-lg">
-                      {scan.file_path}'s Security Scan -{" "}
-                      {new Date(scan.timestamp!).toLocaleDateString()}
+                      {scan.scanName || scan.file_path || "Security Scan"} -{" "}
+                      {new Date(
+                        scan.scanCompleted || scan.timestamp!
+                      ).toLocaleDateString()}
                     </h3>
-                    {scan.success ? (
+                    {scan.success !== false ? (
                       <span className="flex items-center gap-1.5 text-xs font-semibold bg-green-500/10 text-green-500 px-3 py-1 rounded-full">
                         <CheckCircle size={14} /> Completed
                       </span>
@@ -128,7 +150,10 @@ export default function MyScansClient({
                     )}
                   </div>
                   <p className="text-xs text-gray-600 dark:text-gray-400">
-                    Scan Started: {new Date(scan.timestamp!).toLocaleString()}
+                    Scan Started:{" "}
+                    {new Date(
+                      scan.scanCreated || scan.timestamp!
+                    ).toLocaleString()}
                   </p>
                 </div>
                 <div className="flex items-center gap-4 mt-4">
@@ -139,7 +164,8 @@ export default function MyScansClient({
                     /100)
                   </span>
                   <span className="text-xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-3 py-1 rounded-full">
-                    {scan.risks_count || 0} vulnerabilities found
+                    {allRisks.length || scan.risks_count || 0} vulnerabilities
+                    found
                   </span>
                   <Link
                     href={`/my-scans/${scan.scan_id}`}

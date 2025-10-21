@@ -53,27 +53,32 @@ export default function DashboardClient({
   const fetchCoreData = useCallback(async () => {
     try {
       console.log("🔍 [DEBUG] Dashboard: Fetching core data...");
-      
+
       // Load history first (lighter data)
       const historyRes = await authenticatedFetch("/api/history");
+      if (!historyRes.ok) {
+        console.error("History fetch failed:", historyRes.status);
+        setIsCoreDataLoaded(true);
+        return;
+      }
+
       const historyData = await historyRes.json();
-      
+
       if (Array.isArray(historyData)) {
         setScanHistory(historyData);
-        
+
         // Use first scan as latest if available
         if (historyData.length > 0) {
           setLatestScan(historyData[0]);
         }
       }
-      
+
       setIsCoreDataLoaded(true);
-      
+
       // Load detailed results in background
       setTimeout(() => {
         fetchDetailedData();
       }, 100);
-      
     } catch (error) {
       console.error("Failed to fetch core data:", error);
       setIsCoreDataLoaded(true); // Still mark as loaded to show UI
@@ -83,14 +88,25 @@ export default function DashboardClient({
   const fetchDetailedData = useCallback(async () => {
     try {
       console.log("🔍 [DEBUG] Dashboard: Fetching detailed data...");
-      
+
       const resultsRes = await authenticatedFetch("/api/results");
-      const resultsData = await resultsRes.json();
-      
-      if (resultsData.success) {
-        setLatestScan(resultsData);
+      if (!resultsRes.ok) {
+        console.error("Results fetch failed:", resultsRes.status);
+        setIsDetailedDataLoaded(true);
+        return;
       }
-      
+
+      const resultsData = await resultsRes.json();
+
+      if (resultsData.success || resultsData.scanData?.success) {
+        // Use scanData if available, but preserve top-level scan_id
+        const scanData = resultsData.scanData || resultsData;
+        if (resultsData.scan_id && !scanData.scan_id) {
+          scanData.scan_id = resultsData.scan_id;
+        }
+        setLatestScan(scanData);
+      }
+
       setIsDetailedDataLoaded(true);
     } catch (error) {
       console.error("Failed to fetch detailed data:", error);
@@ -102,13 +118,25 @@ export default function DashboardClient({
     setIsLoading(true);
     setIsCoreDataLoaded(false);
     setIsDetailedDataLoaded(false);
-    
+
     try {
       console.log("🔍 [DEBUG] Dashboard: Fetching data...");
       const [resultsRes, historyRes] = await Promise.all([
         authenticatedFetch("/api/results"),
         authenticatedFetch("/api/history"),
       ]);
+
+      if (!resultsRes.ok || !historyRes.ok) {
+        console.error("API calls failed:", {
+          results: resultsRes.status,
+          history: historyRes.status,
+        });
+        setIsCoreDataLoaded(true);
+        setIsDetailedDataLoaded(true);
+        setIsLoading(false);
+        return;
+      }
+
       const resultsData = await resultsRes.json();
       const historyData = await historyRes.json();
 
@@ -137,19 +165,26 @@ export default function DashboardClient({
         });
       });
 
-      if (resultsData.success) {
-        setLatestScan(resultsData);
+      if (resultsData.success || resultsData.scanData?.success) {
+        // Use scanData if available, but preserve top-level scan_id
+        const scanData = resultsData.scanData || resultsData;
+        if (resultsData.scan_id && !scanData.scan_id) {
+          scanData.scan_id = resultsData.scan_id;
+        }
+        setLatestScan(scanData);
       } else if (Array.isArray(historyData) && historyData.length > 0) {
         // If /api/results doesn't have a successful result, use the first scan from history as latest
         setLatestScan(historyData[0]);
       }
 
       if (Array.isArray(historyData)) setScanHistory(historyData);
-      
+
       setIsCoreDataLoaded(true);
       setIsDetailedDataLoaded(true);
     } catch (error) {
       console.error("Failed to refresh data:", error);
+      setIsCoreDataLoaded(true);
+      setIsDetailedDataLoaded(true);
     } finally {
       setIsLoading(false);
     }
@@ -170,7 +205,7 @@ export default function DashboardClient({
       setIsCoreDataLoaded(true);
       setIsDetailedDataLoaded(true);
     }
-  }, [fetchCoreData, initialScanResults, initialScanHistory]);
+  }, [initialScanResults, initialScanHistory.length, fetchCoreData]);
 
   const dashboardMetrics = useMemo(() => {
     if (scanHistory.length === 0) {
