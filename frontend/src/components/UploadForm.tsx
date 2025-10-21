@@ -85,17 +85,19 @@ export default function UploadForm() {
         className={`w-full h-64 border-2 border-dashed rounded-lg flex flex-col items-center justify-center text-center cursor-pointer transition-colors
           ${
             isDragActive
-              ? "border-primary bg-primary/10"
-              : "border-border hover:border-primary/50"
+              ? "border-blue-600 dark:border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+              : "border-gray-300 dark:border-gray-600 hover:border-blue-600/50 dark:hover:border-blue-500/50"
           }`}
       >
         <input {...getInputProps()} />
-        <UploadCloud className="w-12 h-12 text-muted-foreground mb-4" />
-        <p className="text-muted-foreground">Drop your codebase files here</p>
-        <p className="text-sm text-muted-foreground/80">
+        <UploadCloud className="w-12 h-12 text-gray-600 dark:text-gray-400 mb-4" />
+        <p className="text-gray-600 dark:text-gray-400">
+          Drop your codebase files here
+        </p>
+        <p className="text-sm text-gray-600 dark:text-gray-400/80">
           or click to browse files
         </p>
-        <button className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-semibold">
+        <button className="mt-4 px-4 py-2 bg-blue-600 text-white dark:bg-blue-500 rounded-md text-sm font-semibold">
           Choose Files
         </button>
       </div>
@@ -107,19 +109,19 @@ export default function UploadForm() {
             <h3 className="text-lg font-semibold mb-3">
               Selected Files ({file ? 1 : 0})
             </h3>
-            <div className="bg-card border rounded-lg p-3 flex items-center justify-between transition-all duration-300">
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 flex items-center justify-between transition-all duration-300">
               <div className="flex items-center gap-3">
                 <FileText className="w-5 h-5 text-primary flex-shrink-0" />
                 <div className="flex-grow min-w-0">
                   <p className="font-medium text-sm truncate">{file.name}</p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
                     {(file.size / 1024).toFixed(1)} KB
                   </p>
                 </div>
               </div>
               <button
                 onClick={removeFile}
-                className="p-1.5 rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
+                className="p-1.5 rounded-full text-gray-600 dark:text-gray-400 hover:bg-destructive/10 hover:text-destructive transition-colors"
               >
                 <X size={18} />
               </button>
@@ -133,7 +135,7 @@ export default function UploadForm() {
               className="block text-lg font-semibold mb-3"
             >
               Scan Name{" "}
-              <span className="text-sm font-normal text-muted-foreground">
+              <span className="text-sm font-normal text-gray-600 dark:text-gray-400">
                 (Optional)
               </span>
             </label>
@@ -143,7 +145,7 @@ export default function UploadForm() {
               value={scanName}
               onChange={(e) => setScanName(e.target.value)}
               placeholder="Enter a name for this scan..."
-              className="w-full px-4 py-3 bg-card border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none transition-shadow"
+              className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 focus:outline-none transition-shadow"
             />
           </div>
 
@@ -159,7 +161,7 @@ export default function UploadForm() {
             <button
               onClick={handleScan}
               disabled={!file || isUploading}
-              className="w-full px-6 py-3 bg-primary text-primary-foreground rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-base hover:bg-primary/90 transition-colors"
+              className="w-full px-6 py-3 bg-blue-600 text-white dark:bg-blue-500 rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-base hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
             >
               {isUploading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />

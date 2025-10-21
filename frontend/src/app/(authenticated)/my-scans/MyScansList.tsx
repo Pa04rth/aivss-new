@@ -10,8 +10,9 @@ import {
   Link,
 } from "lucide-react";
 import { calculateRiskScore } from "@/lib/scoring";
-import ScanDetailsModal from "@/components/ScanDetailsModal"; // We'll create this next
+import ScanDetailsModal from "@/components/ScanDetailsModal";
 import { authenticatedFetch } from "@/lib/auth";
+import { SkeletonScanHistory } from "@/components/ui/skeleton";
 
 // This is the same interface from your Dashboard
 interface ScanResult {
@@ -28,15 +29,15 @@ interface ScanResult {
   scan_id?: number;
 }
 interface MyScansClientProps {
-  initialScanHistory: ScanResult[];
+  initialScanHistory?: ScanResult[];
 }
 export default function MyScansClient({
-  initialScanHistory,
+  initialScanHistory = [],
 }: MyScansClientProps) {
   // Initialize state with props
   const [scanHistory, setScanHistory] =
     useState<ScanResult[]>(initialScanHistory);
-  const [isLoading, setIsLoading] = useState(false); // Not loading initially
+  const [isLoading, setIsLoading] = useState(initialScanHistory.length === 0);
   const [selectedScan, setSelectedScan] = useState<ScanResult | null>(null);
 
   const fetchHistory = async () => {
@@ -64,28 +65,35 @@ export default function MyScansClient({
     }
   };
 
+  // Fetch data on mount if not provided initially
+  useEffect(() => {
+    if (initialScanHistory.length === 0) {
+      fetchHistory();
+    }
+  }, [initialScanHistory.length]);
+
   return (
     <div className="p-8 space-y-8 text-foreground">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">My Scans</h1>
-        <p className="text-muted-foreground mt-2">
+        <p className="text-gray-600 dark:text-gray-400 mt-2">
           View and manage your security scan history.
         </p>
       </div>
 
       {/* Welcome Card */}
-      <div className="bg-card border rounded-lg p-6 flex items-center justify-between">
+      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Folder className="w-8 h-8 text-muted-foreground" />
+          <Folder className="w-8 h-8 text-gray-600 dark:text-gray-400" />
           <div>
             <h2 className="font-semibold">Welcome back!</h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               You have {scanHistory.length} scan
               {scanHistory.length !== 1 ? "s" : ""} in your history.
             </p>
           </div>
         </div>
-        <span className="text-xs font-semibold bg-muted text-muted-foreground px-3 py-1 rounded-full">
+        <span className="text-xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-3 py-1 rounded-full">
           Database
         </span>
       </div>
@@ -93,13 +101,16 @@ export default function MyScansClient({
       {/* Scan History List */}
       <div className="space-y-4">
         {isLoading ? (
-          <p className="text-muted-foreground">Loading scans...</p>
+          <SkeletonScanHistory />
         ) : scanHistory.length > 0 ? (
           scanHistory.map((scan) => {
             const { score, level, color } = calculateRiskScore(scan.risks);
 
             return (
-              <div key={scan.scan_id} className="bg-card border rounded-lg p-5">
+              <div
+                key={scan.scan_id}
+                className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5"
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <h3 className="font-bold text-lg">
@@ -116,7 +127,7 @@ export default function MyScansClient({
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
                     Scan Started: {new Date(scan.timestamp!).toLocaleString()}
                   </p>
                 </div>
@@ -127,7 +138,7 @@ export default function MyScansClient({
                     <ShieldCheck size={14} /> {level} Risk ({score.toFixed(1)}
                     /100)
                   </span>
-                  <span className="text-xs font-semibold bg-muted text-muted-foreground px-3 py-1 rounded-full">
+                  <span className="text-xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-3 py-1 rounded-full">
                     {scan.risks_count || 0} vulnerabilities found
                   </span>
                   <Link
@@ -141,7 +152,7 @@ export default function MyScansClient({
             );
           })
         ) : (
-          <p className="text-muted-foreground text-center py-8">
+          <p className="text-gray-600 dark:text-gray-400 text-center py-8">
             No scans found in your history.
           </p>
         )}

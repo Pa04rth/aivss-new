@@ -8,8 +8,10 @@ import StaticAnalysis from "@/components/report/StaticAnalysis";
 import CodeFileAnalysis from "@/components/report/CodeFileAnalysis";
 import WorkflowAnalysis from "@/components/report/WorkflowAnalysis";
 import AIVSSAnalysisComponent from "@/components/report/AIVSSAnalysis";
-import { Loader2 } from "lucide-react";
-import { authenticatedFetch } from "@/lib/auth";
+import {
+  SkeletonReportHeader,
+  SkeletonReportSection,
+} from "@/components/ui/skeleton";
 
 interface ReportPageProps {
   params: Promise<{
@@ -106,10 +108,13 @@ export default function ReportPage({ params }: ReportPageProps) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center space-y-4">
-          <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
-          <p className="text-muted-foreground">Loading security report...</p>
+      <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+        <div className="p-4 md:p-8 space-y-12">
+          <SkeletonReportHeader />
+          <SkeletonReportSection />
+          <SkeletonReportSection />
+          <SkeletonReportSection />
+          <SkeletonReportSection />
         </div>
       </div>
     );
@@ -151,7 +156,7 @@ export default function ReportPage({ params }: ReportPageProps) {
   const totalRisks = allRisks.length;
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="p-4 md:p-8 space-y-12">
         <SecurityReportHeader
           scanName={reportData.scanName}

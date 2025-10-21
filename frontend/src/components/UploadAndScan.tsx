@@ -164,28 +164,28 @@ export default function UploadAndScan() {
           1000
       );
       return (
-        <div className="bg-card border rounded-xl p-8 md:p-12 w-full max-w-3xl space-y-8 text-center animate-fade-in mx-auto">
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-8 md:p-12 w-full max-w-3xl space-y-8 text-center animate-fade-in mx-auto">
           <CheckCircle className="w-16 h-16 text-green-500 mx-auto" />
           <div className="space-y-2">
             <h1 className="text-3xl font-bold tracking-tight">
               Your security scan has been completed successfully!
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-gray-600 dark:text-gray-400">
               We've analyzed your codebase and identified potential security
               risks and vulnerabilities.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-4 pt-4">
-            <div className="bg-muted/50 rounded-lg p-4">
-              <p className="text-xs font-semibold text-muted-foreground uppercase">
+            <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
+              <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">
                 STARTED
               </p>
               <p className="text-2xl font-bold mt-2">
                 {startTime.toLocaleTimeString()}
               </p>
             </div>
-            <div className="bg-muted/50 rounded-lg p-4">
-              <p className="text-xs font-semibold text-muted-foreground uppercase">
+            <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
+              <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">
                 TOTAL TIME
               </p>
               <p className="text-2xl font-bold mt-2">{totalTime}s</p>
@@ -200,7 +200,7 @@ export default function UploadAndScan() {
             </button>
             <button
               onClick={resetState}
-              className="w-full px-6 py-3 bg-primary text-primary-foreground rounded-md font-semibold flex items-center justify-center gap-2 text-base hover:bg-primary/90 transition-colors"
+              className="w-full px-6 py-3 bg-blue-600 text-white dark:bg-blue-500 rounded-md font-semibold flex items-center justify-center gap-2 text-base hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
             >
               <Power size={20} /> Start New Scan
             </button>
@@ -217,35 +217,35 @@ export default function UploadAndScan() {
     case "polling":
       if (!startTime) return null;
       return (
-        <div className="bg-card border rounded-xl p-8 md:p-12 w-full max-w-3xl space-y-6 animate-fade-in mx-auto">
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-8 md:p-12 w-full max-w-3xl space-y-6 animate-fade-in mx-auto">
           <div className="flex items-center gap-4">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <Loader2 className="w-8 h-8 animate-spin text-blue-600 dark:text-blue-400" />
             <h1 className="text-3xl font-bold tracking-tight">
               Scan in Progress
             </h1>
           </div>
           <div className="text-left space-y-2">
-            <p className="font-semibold text-lg text-foreground">
+            <p className="font-semibold text-lg text-gray-900 dark:text-gray-100">
               Please be patient! We are thoroughly scanning your file for
               vulnerabilities!
             </p>
-            <p className="text-muted-foreground">
+            <p className="text-gray-600 dark:text-gray-400">
               Our AI-powered analysis is examining your codebase for security
               risks, potential vulnerabilities, and providing detailed
               recommendations.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-4 pt-4">
-            <div className="bg-muted/50 rounded-lg p-4 text-center">
-              <p className="text-xs font-semibold text-muted-foreground uppercase">
+            <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 text-center">
+              <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">
                 STARTED
               </p>
               <p className="text-2xl font-bold mt-2">
                 {startTime.toLocaleTimeString()}
               </p>
             </div>
-            <div className="bg-muted/50 rounded-lg p-4 text-center">
-              <p className="text-xs font-semibold text-muted-foreground uppercase">
+            <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 text-center">
+              <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">
                 ELAPSED
               </p>
               <p className="text-2xl font-bold mt-2">{elapsed}s</p>
@@ -264,19 +264,19 @@ export default function UploadAndScan() {
             {...getRootProps()}
             className={`w-full h-64 border-2 border-dashed rounded-lg flex flex-col items-center justify-center text-center cursor-pointer transition-colors ${
               isDragActive
-                ? "border-primary bg-primary/10"
-                : "border-border hover:border-primary/50"
+                ? "border-blue-600 dark:border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                : "border-gray-300 dark:border-gray-600 hover:border-blue-600/50 dark:hover:border-blue-500/50"
             }`}
           >
             <input {...getInputProps()} />
-            <UploadCloud className="w-12 h-12 text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">
+            <UploadCloud className="w-12 h-12 text-gray-600 dark:text-gray-400 mb-4" />
+            <p className="text-gray-600 dark:text-gray-400">
               Drop your codebase files here
             </p>
-            <p className="text-sm text-muted-foreground/80">
+            <p className="text-sm text-gray-600 dark:text-gray-400/80">
               or click to browse files
             </p>
-            <button className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-semibold">
+            <button className="mt-4 px-4 py-2 bg-blue-600 text-white dark:bg-blue-500 rounded-md text-sm font-semibold">
               Choose Files
             </button>
           </div>
@@ -286,14 +286,14 @@ export default function UploadAndScan() {
                 <h3 className="text-lg font-semibold mb-3">
                   Selected Files (1)
                 </h3>
-                <div className="bg-card border rounded-lg p-3 flex items-center justify-between">
+                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <FileText className="w-5 h-5 text-primary flex-shrink-0" />
+                    <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
                     <div className="flex-grow min-w-0">
                       <p className="font-medium text-sm truncate">
                         {file.name}
                       </p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-gray-600 dark:text-gray-400">
                         {(file.size / 1024).toFixed(1)} KB
                       </p>
                     </div>
@@ -304,7 +304,7 @@ export default function UploadAndScan() {
                       setScanName("");
                       setError(null);
                     }}
-                    className="p-1.5 rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
+                    className="p-1.5 rounded-full text-gray-600 dark:text-gray-400 hover:bg-destructive/10 hover:text-destructive transition-colors"
                   >
                     <X size={18} />
                   </button>
@@ -316,7 +316,7 @@ export default function UploadAndScan() {
                   className="block text-lg font-semibold mb-3"
                 >
                   Scan Name{" "}
-                  <span className="text-sm font-normal text-muted-foreground">
+                  <span className="text-sm font-normal text-gray-600 dark:text-gray-400">
                     (Optional)
                   </span>
                 </label>
@@ -326,7 +326,7 @@ export default function UploadAndScan() {
                   value={scanName}
                   onChange={(e) => setScanName(e.target.value)}
                   placeholder="Enter a name for this scan..."
-                  className="w-full px-4 py-3 bg-card border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none transition-shadow"
+                  className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none transition-shadow"
                 />
               </div>
               {(error || scanState === "error") && (
@@ -338,7 +338,7 @@ export default function UploadAndScan() {
                 <button
                   onClick={handleStartScan}
                   disabled={!file || scanState === "uploading"}
-                  className="w-full px-6 py-3 bg-primary text-primary-foreground rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-base hover:bg-primary/90 transition-colors"
+                  className="w-full px-6 py-3 bg-blue-600 text-white dark:bg-blue-500 rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-base hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
                 >
                   {scanState === "uploading" ? (
                     <Loader2 className="w-5 h-5 animate-spin" />

@@ -32,11 +32,11 @@ const AIVSSAnalysisComponent: React.FC<AIVSSAnalysisProps> = ({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">
+          <p className="text-gray-600 dark:text-gray-400">
             {aivssAnalysis.message || "AIVSS analysis could not be completed."}
           </p>
           {aivssAnalysis.error && (
-            <p className="text-sm text-red-600 mt-2">
+            <p className="text-sm text-red-600 dark:text-red-400 mt-2">
               Error: {aivssAnalysis.error}
             </p>
           )}
@@ -100,7 +100,7 @@ const AIVSSAnalysisComponent: React.FC<AIVSSAnalysisProps> = ({
                 <Badge className={getScoreColor(scores.aivssScore || 0)}>
                   {getScoreLabel(scores.aivssScore || 0)}
                 </Badge>
-                <p className="text-sm text-muted-foreground mt-2">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
                   AI Vulnerability Score
                 </p>
               </div>
@@ -118,7 +118,7 @@ const AIVSSAnalysisComponent: React.FC<AIVSSAnalysisProps> = ({
                 <Badge className={getScoreColor(scores.aarsScore || 0)}>
                   {getScoreLabel(scores.aarsScore || 0)}
                 </Badge>
-                <p className="text-sm text-muted-foreground mt-2">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
                   AI Agent Risk Score
                 </p>
               </div>
@@ -136,7 +136,7 @@ const AIVSSAnalysisComponent: React.FC<AIVSSAnalysisProps> = ({
                 <Badge className={getScoreColor(scores.cvssScore || 0)}>
                   {getScoreLabel(scores.cvssScore || 0)}
                 </Badge>
-                <p className="text-sm text-muted-foreground mt-2">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
                   Traditional Security Score
                 </p>
               </div>
@@ -144,7 +144,7 @@ const AIVSSAnalysisComponent: React.FC<AIVSSAnalysisProps> = ({
           ) : (
             <div className="text-center py-8">
               <AlertTriangle className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
-              <p className="text-muted-foreground">
+              <p className="text-gray-600 dark:text-gray-400">
                 AIVSS Calculator API is not responding. Scores unavailable.
               </p>
             </div>
@@ -164,7 +164,7 @@ const AIVSSAnalysisComponent: React.FC<AIVSSAnalysisProps> = ({
           <CardContent>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-muted-foreground">
+                <label className="text-sm font-medium text-gray-600 dark:text-gray-400">
                   CVSS Vector
                 </label>
                 <div className="mt-1 p-3 bg-gray-50 rounded-md font-mono text-sm break-all">
@@ -172,7 +172,7 @@ const AIVSSAnalysisComponent: React.FC<AIVSSAnalysisProps> = ({
                 </div>
               </div>
               <div>
-                <label className="text-sm font-medium text-muted-foreground">
+                <label className="text-sm font-medium text-gray-600 dark:text-gray-400">
                   AIVSS Vector
                 </label>
                 <div className="mt-1 p-3 bg-gray-50 rounded-md font-mono text-sm break-all">
@@ -204,7 +204,7 @@ const AIVSSAnalysisComponent: React.FC<AIVSSAnalysisProps> = ({
                     <div className="font-medium capitalize">
                       {factor.replace(/_/g, " ")}
                     </div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
                       Value: {value}
                     </div>
                   </div>
@@ -232,7 +232,9 @@ const AIVSSAnalysisComponent: React.FC<AIVSSAnalysisProps> = ({
               {Object.entries(parameters.cvss).map(([param, value]) => (
                 <div key={param} className="text-center p-3 border rounded-lg">
                   <div className="font-mono text-lg font-bold">{value}</div>
-                  <div className="text-sm text-muted-foreground">{param}</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    {param}
+                  </div>
                 </div>
               ))}
             </div>
@@ -262,7 +264,7 @@ const AIVSSAnalysisComponent: React.FC<AIVSSAnalysisProps> = ({
             <div className="flex items-center justify-between p-4 border rounded-lg">
               <div>
                 <div className="font-medium">AIVSS Detailed Report</div>
-                <div className="text-sm text-muted-foreground">
+                <div className="text-sm text-gray-600 dark:text-gray-400">
                   Comprehensive PDF analysis with detailed scoring breakdown
                 </div>
               </div>
@@ -324,13 +326,13 @@ const AIVSSAnalysisComponent: React.FC<AIVSSAnalysisProps> = ({
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm">Analysis Timestamp:</span>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-sm text-gray-600 dark:text-gray-400">
                 {new Date(aivssAnalysis.timestamp).toLocaleString()}
               </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm">Message:</span>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-sm text-gray-600 dark:text-gray-400">
                 {aivssAnalysis.message}
               </span>
             </div>

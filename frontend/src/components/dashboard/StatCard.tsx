@@ -13,7 +13,9 @@ export default function StatCard({ title, value, Icon, color }: Props) {
     <Card className={`p-6 border-2 ${color.replace("text-", "border-")}/20`}>
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-700">{title}</p>
+          <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            {title}
+          </p>
           <p className={`text-3xl font-bold mt-2 ${color}`}>{value}</p>
         </div>
         <div

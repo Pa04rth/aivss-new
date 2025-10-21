@@ -11,10 +11,10 @@ export default function ScanInterface() {
   return (
     <div className="space-y-8 max-w-3xl mx-auto">
       <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight theme-text">
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
           Upload Codebase
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-gray-600 dark:text-gray-400">
           Select a Python file or connect automation platform for security
           analysis
         </p>
@@ -42,10 +42,10 @@ export default function ScanInterface() {
 
         <TabsContent value="zapier">
           <div className="text-center py-12">
-            <h3 className="text-lg font-semibold mb-2 theme-text">
+            <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">
               Zapier Integration
             </h3>
-            <p className="text-muted-foreground">
+            <p className="text-gray-600 dark:text-gray-400">
               Coming soon! We're working on Zapier workflow analysis.
             </p>
           </div>
@@ -53,10 +53,10 @@ export default function ScanInterface() {
 
         <TabsContent value="make">
           <div className="text-center py-12">
-            <h3 className="text-lg font-semibold mb-2 theme-text">
+            <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">
               Make.com Integration
             </h3>
-            <p className="text-muted-foreground">
+            <p className="text-gray-600 dark:text-gray-400">
               Coming soon! We're working on Make.com workflow analysis.
             </p>
           </div>

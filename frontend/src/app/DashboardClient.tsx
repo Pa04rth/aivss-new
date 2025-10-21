@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -14,34 +14,95 @@ import {
   Eye,
   Power,
 } from "lucide-react";
-import { authenticatedFetch } from "@/lib/auth";
+import { authenticatedFetch } from "@/lib/api";
 import { FullScanReport } from "@/lib/types";
 import { calculateRiskScore } from "@/lib/scoring";
 import StatCard from "@/components/dashboard/StatCard";
 import VulnerabilityList from "@/components/dashboard/VulnerabilityList";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+  SkeletonDashboardMetrics,
+  SkeletonScanHistory,
+} from "@/components/ui/skeleton";
 
 interface DashboardClientProps {
-  initialScanResults: FullScanReport | null;
-  initialScanHistory: FullScanReport[];
+  initialScanResults?: FullScanReport | null;
+  initialScanHistory?: FullScanReport[];
 }
 
 export default function DashboardClient({
-  initialScanResults,
-  initialScanHistory,
+  initialScanResults = null,
+  initialScanHistory = [],
 }: DashboardClientProps) {
   const [latestScan, setLatestScan] = useState<FullScanReport | null>(
     initialScanResults
   );
   const [scanHistory, setScanHistory] =
     useState<FullScanReport[]>(initialScanHistory);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(
+    initialScanResults === null && initialScanHistory.length === 0
+  );
+  const [isCoreDataLoaded, setIsCoreDataLoaded] = useState(false);
+  const [isDetailedDataLoaded, setIsDetailedDataLoaded] = useState(false);
+  const [isSystemOverviewLoading, setIsSystemOverviewLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("latestScan");
   const router = useRouter();
 
+  // Progressive loading: Load core data first, then detailed data
+  const fetchCoreData = useCallback(async () => {
+    try {
+      console.log("🔍 [DEBUG] Dashboard: Fetching core data...");
+      
+      // Load history first (lighter data)
+      const historyRes = await authenticatedFetch("/api/history");
+      const historyData = await historyRes.json();
+      
+      if (Array.isArray(historyData)) {
+        setScanHistory(historyData);
+        
+        // Use first scan as latest if available
+        if (historyData.length > 0) {
+          setLatestScan(historyData[0]);
+        }
+      }
+      
+      setIsCoreDataLoaded(true);
+      
+      // Load detailed results in background
+      setTimeout(() => {
+        fetchDetailedData();
+      }, 100);
+      
+    } catch (error) {
+      console.error("Failed to fetch core data:", error);
+      setIsCoreDataLoaded(true); // Still mark as loaded to show UI
+    }
+  }, []);
+
+  const fetchDetailedData = useCallback(async () => {
+    try {
+      console.log("🔍 [DEBUG] Dashboard: Fetching detailed data...");
+      
+      const resultsRes = await authenticatedFetch("/api/results");
+      const resultsData = await resultsRes.json();
+      
+      if (resultsData.success) {
+        setLatestScan(resultsData);
+      }
+      
+      setIsDetailedDataLoaded(true);
+    } catch (error) {
+      console.error("Failed to fetch detailed data:", error);
+      setIsDetailedDataLoaded(true); // Still mark as loaded
+    }
+  }, []);
+
   const fetchAllData = useCallback(async () => {
     setIsLoading(true);
+    setIsCoreDataLoaded(false);
+    setIsDetailedDataLoaded(false);
+    
     try {
       console.log("🔍 [DEBUG] Dashboard: Fetching data...");
       const [resultsRes, historyRes] = await Promise.all([
@@ -76,14 +137,40 @@ export default function DashboardClient({
         });
       });
 
-      if (resultsData.success) setLatestScan(resultsData);
+      if (resultsData.success) {
+        setLatestScan(resultsData);
+      } else if (Array.isArray(historyData) && historyData.length > 0) {
+        // If /api/results doesn't have a successful result, use the first scan from history as latest
+        setLatestScan(historyData[0]);
+      }
+
       if (Array.isArray(historyData)) setScanHistory(historyData);
+      
+      setIsCoreDataLoaded(true);
+      setIsDetailedDataLoaded(true);
     } catch (error) {
       console.error("Failed to refresh data:", error);
     } finally {
       setIsLoading(false);
     }
   }, []);
+
+  // Fetch data on mount if not provided initially
+  useEffect(() => {
+    if (initialScanResults === null && initialScanHistory.length === 0) {
+      // Use progressive loading for better UX
+      fetchCoreData();
+    } else if (initialScanResults === null && initialScanHistory.length > 0) {
+      // If we have history but no latest scan, use first scan from history
+      setLatestScan(initialScanHistory[0]);
+      setIsCoreDataLoaded(true);
+      setIsDetailedDataLoaded(true);
+    } else {
+      // We have initial data, mark as loaded
+      setIsCoreDataLoaded(true);
+      setIsDetailedDataLoaded(true);
+    }
+  }, [fetchCoreData, initialScanResults, initialScanHistory]);
 
   const dashboardMetrics = useMemo(() => {
     if (scanHistory.length === 0) {
@@ -154,32 +241,36 @@ export default function DashboardClient({
         </Button>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          title="Compromised"
-          value={dashboardMetrics.compromised}
-          Icon={ShieldAlert}
-          color="text-red-500"
-        />
-        <StatCard
-          title="Avg Risk Score"
-          value={dashboardMetrics.avgRiskScore}
-          Icon={TrendingUp}
-          color="text-yellow-600"
-        />
-        <StatCard
-          title="System Health"
-          value={`${dashboardMetrics.connectivity}%`}
-          Icon={Wifi}
-          color="text-blue-500"
-        />
-        <StatCard
-          title="High Risk Findings"
-          value={dashboardMetrics.highRiskCount}
-          Icon={BarChart}
-          color="text-orange-500"
-        />
-      </div>
+      {!isCoreDataLoaded ? (
+        <SkeletonDashboardMetrics />
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <StatCard
+            title="Compromised"
+            value={dashboardMetrics.compromised}
+            Icon={ShieldAlert}
+            color="text-red-500"
+          />
+          <StatCard
+            title="Avg Risk Score"
+            value={dashboardMetrics.avgRiskScore}
+            Icon={TrendingUp}
+            color="text-yellow-600"
+          />
+          <StatCard
+            title="System Health"
+            value={`${dashboardMetrics.connectivity}%`}
+            Icon={Wifi}
+            color="text-blue-500"
+          />
+          <StatCard
+            title="High Risk Findings"
+            value={dashboardMetrics.highRiskCount}
+            Icon={BarChart}
+            color="text-orange-500"
+          />
+        </div>
+      )}
 
       <Card className="p-6 bg-white shadow-sm">
         <div className="flex border-b">
@@ -204,7 +295,14 @@ export default function DashboardClient({
             Scan History
           </button>
           <button
-            onClick={() => setActiveTab("systemOverview")}
+            onClick={() => {
+              setActiveTab("systemOverview");
+              if (!latestScan && !isSystemOverviewLoading) {
+                setIsSystemOverviewLoading(true);
+                // Simulate loading for system overview data
+                setTimeout(() => setIsSystemOverviewLoading(false), 1000);
+              }
+            }}
             className={`px-4 py-2 text-sm font-semibold ${
               activeTab === "systemOverview"
                 ? "border-b-2 border-blue-600 text-blue-600"
@@ -324,7 +422,9 @@ export default function DashboardClient({
               <h3 className="font-semibold text-gray-800">
                 Recent Scan History
               </h3>
-              {scanHistory.length > 0 ? (
+              {!isCoreDataLoaded ? (
+                <SkeletonScanHistory />
+              ) : scanHistory.length > 0 ? (
                 scanHistory.slice(0, 5).map((scan) => {
                   const allRisks = [
                     ...(scan.contextualFindings || []),
@@ -367,32 +467,53 @@ export default function DashboardClient({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <h3 className="font-semibold text-gray-800">Security Status</h3>
-                <div className="mt-4 space-y-2 text-sm text-gray-700">
-                  <div className="flex justify-between">
-                    <span>Overall Risk Level</span>
-                    <span className="font-bold text-red-500">
-                      {latestScanMetrics?.level || "N/A"}
-                    </span>
+                {isSystemOverviewLoading ? (
+                  <div className="mt-4 space-y-2">
+                    <div className="flex justify-between">
+                      <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
+                      <div className="h-4 bg-gray-200 rounded animate-pulse w-16"></div>
+                    </div>
+                    <div className="flex justify-between">
+                      <div className="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
+                      <div className="h-4 bg-gray-200 rounded animate-pulse w-8"></div>
+                    </div>
+                    <div className="flex justify-between">
+                      <div className="h-4 bg-gray-200 rounded animate-pulse w-28"></div>
+                      <div className="h-4 bg-gray-200 rounded animate-pulse w-12"></div>
+                    </div>
+                    <div className="flex justify-between">
+                      <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
+                      <div className="h-4 bg-gray-200 rounded animate-pulse w-16"></div>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Critical Issues</span>
-                    <span className="font-bold">
-                      {latestScanMetrics?.criticalCount || 0}
-                    </span>
+                ) : (
+                  <div className="mt-4 space-y-2 text-sm text-gray-700">
+                    <div className="flex justify-between">
+                      <span>Overall Risk Level</span>
+                      <span className="font-bold text-red-500">
+                        {latestScanMetrics?.level || "N/A"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Critical Issues</span>
+                      <span className="font-bold">
+                        {latestScanMetrics?.criticalCount || 0}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>High Risk Items</span>
+                      <span className="font-bold">
+                        {dashboardMetrics.highRiskCount}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>System Health</span>
+                      <span className="font-bold">
+                        {dashboardMetrics.connectivity}%
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span>High Risk Items</span>
-                    <span className="font-bold">
-                      {dashboardMetrics.highRiskCount}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>System Health</span>
-                    <span className="font-bold">
-                      {dashboardMetrics.connectivity}%
-                    </span>
-                  </div>
-                </div>
+                )}
               </div>
               <div>
                 <h3 className="font-semibold text-gray-800">Quick Actions</h3>

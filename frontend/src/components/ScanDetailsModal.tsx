@@ -46,14 +46,14 @@ export default function ScanDetailsModal({ scan, onClose }: ModalProps) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
       {/* This container now uses theme-aware colors */}
-      <div className="bg-card text-card-foreground rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+      <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold">Scan Details</h2>
             {/* The close button now calls the correct `onClose` function */}
             <button
               onClick={onClose}
-              className="text-muted-foreground hover:text-foreground text-2xl"
+              className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:text-gray-100 text-2xl"
             >
               &times;
             </button>
@@ -74,16 +74,16 @@ export default function ScanDetailsModal({ scan, onClose }: ModalProps) {
                 </span>
               </div>
               {scan.timestamp && (
-                <span className="text-sm text-muted-foreground">
+                <span className="text-sm text-gray-600 dark:text-gray-400">
                   {new Date(scan.timestamp).toLocaleString()}
                 </span>
               )}
             </div>
 
             {scan.file_path && (
-              <div className="p-3 bg-muted rounded">
+              <div className="p-3 bg-gray-100 dark:bg-gray-700 rounded">
                 <p className="text-sm font-medium">File Analyzed:</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   {scan.file_path}
                 </p>
               </div>

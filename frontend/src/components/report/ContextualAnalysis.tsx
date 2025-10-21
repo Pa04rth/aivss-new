@@ -36,13 +36,13 @@ export default function ContextualAnalysis({ findings }: Props) {
     <div className="space-y-8">
       <div>
         <h2 className="text-2xl font-bold tracking-tight flex items-center gap-3">
-          <Lightbulb className="text-primary" />
+          <Lightbulb className="text-blue-600 dark:text-blue-400" />
           Context Aware Analysis Results{" "}
-          <span className="text-sm font-bold bg-gray-100 text-gray-700 px-2 py-1 rounded-md">
+          <span className="text-sm font-bold bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-md">
             {findings.length} found
           </span>
         </h2>
-        <p className="text-gray-700 mt-1">
+        <p className="text-gray-700 dark:text-gray-300 mt-1">
           Advanced security vulnerabilities identified through AI analysis.
         </p>
       </div>
@@ -63,7 +63,7 @@ export default function ContextualAnalysis({ findings }: Props) {
                     {finding.severity}
                   </span>
                   <h3 className="text-xl font-bold">{finding.title}</h3>
-                  <p className="text-sm text-gray-700 leading-relaxed">
+                  <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                     {finding.description}
                   </p>
                   <div
@@ -80,11 +80,11 @@ export default function ContextualAnalysis({ findings }: Props) {
               </div>
 
               {/* Right Side: Implementation Guide */}
-              <div className="bg-muted/30 p-6">
+              <div className="bg-gray-100 dark:bg-gray-800 p-6">
                 <h4 className="font-bold mb-4 flex items-center gap-2">
                   <Code2 size={18} /> Implement Secure Solution
                 </h4>
-                <div className="prose prose-sm dark:prose-invert max-w-none bg-card text-card-foreground p-4 rounded-lg border">
+                <div className="prose prose-sm dark:prose-invert max-w-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-4 rounded-lg border">
                   {/* We use ReactMarkdown to render the implementation guide */}
                   <div className="text-foreground">
                     <ReactMarkdown
@@ -94,12 +94,12 @@ export default function ContextualAnalysis({ findings }: Props) {
                           <p className="text-foreground mb-2">{children}</p>
                         ),
                         code: ({ children }) => (
-                          <code className="bg-muted text-foreground px-1 py-0.5 rounded text-sm">
+                          <code className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-1 py-0.5 rounded text-sm">
                             {children}
                           </code>
                         ),
                         pre: ({ children }) => (
-                          <pre className="bg-muted text-foreground p-3 rounded overflow-x-auto">
+                          <pre className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-3 rounded overflow-x-auto">
                             {children}
                           </pre>
                         ),

@@ -18,18 +18,18 @@ export default function CodeFileAnalysis({ codeFiles }: Props) {
     <div className="space-y-8">
       <div>
         <h2 className="text-2xl font-bold tracking-tight flex items-center gap-3">
-          <FileCode className="text-primary" />
+          <FileCode className="text-blue-600 dark:text-blue-400" />
           Code Files Analysis
         </h2>
-        <div className="bg-green-500/10 text-green-700 text-sm rounded-lg p-3 flex items-center gap-2 mt-4">
+        <div className="bg-green-500/10 text-green-700 dark:text-green-400 text-sm rounded-lg p-3 flex items-center gap-2 mt-4">
           <CheckCircle size={16} /> Code files from your scan are displayed
           below. Files with security comments added are marked with 'M'.
         </div>
       </div>
       <Card className="flex overflow-hidden h-[600px]">
         {/* File Explorer */}
-        <div className="w-1/4 bg-muted/30 border-r p-4">
-          <h3 className="text-xs font-bold uppercase text-muted-foreground mb-3">
+        <div className="w-1/4 bg-gray-100 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4">
+          <h3 className="text-xs font-bold uppercase text-gray-600 dark:text-gray-400 mb-3">
             Explorer
           </h3>
           <ul>
@@ -39,8 +39,8 @@ export default function CodeFileAnalysis({ codeFiles }: Props) {
                   onClick={() => setSelectedFile(name)}
                   className={`w-full text-left flex items-center gap-2 px-2 py-1.5 rounded-md text-sm ${
                     selectedFile === name
-                      ? "bg-primary/10 text-primary font-semibold"
-                      : "hover:bg-muted"
+                      ? "bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 font-semibold"
+                      : "hover:bg-gray-100 dark:hover:bg-gray-700"
                   }`}
                 >
                   <FileText size={16} /> {name}{" "}
@@ -54,7 +54,7 @@ export default function CodeFileAnalysis({ codeFiles }: Props) {
         </div>
         {/* Code Viewer */}
         <div className="w-3/4 flex flex-col">
-          <div className="flex-shrink-0 bg-muted/50 border-b p-3 flex items-center justify-between text-sm">
+          <div className="flex-shrink-0 bg-gray-100 dark:bg-gray-700 border-b p-3 flex items-center justify-between text-sm">
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 bg-green-500 rounded-full"></span>
               <span className="font-medium">{selectedFile}</span>
@@ -69,7 +69,7 @@ export default function CodeFileAnalysis({ codeFiles }: Props) {
           </div>
         </div>
       </Card>
-      <p className="text-xs text-muted-foreground text-center">
+      <p className="text-xs text-gray-600 dark:text-gray-400 text-center">
         Note: Security comments are highlighted in bold. Original files are
         backed up with .bak extensions.
       </p>
