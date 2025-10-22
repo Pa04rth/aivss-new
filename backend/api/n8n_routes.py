@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 n8n_bp = Blueprint('n8n', __name__, url_prefix='/api/n8n')
 
 # Initialize managers
-credential_manager = CredentialManager()
+credential_manager = CredentialManager(os.getenv('ENCRYPTION_KEY'))
 scan_result_manager = ScanResultManager()
 platform_manager = PlatformManager(credential_manager)
 workflow_analyzer = WorkflowAnalyzer()

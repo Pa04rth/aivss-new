@@ -27,7 +27,7 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
 # Initialize managers
 db_manager = DatabaseManager()
-credential_manager = CredentialManager()
+credential_manager = CredentialManager(os.getenv('ENCRYPTION_KEY'))
 
 # OAuth configuration
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')

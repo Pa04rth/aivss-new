@@ -167,7 +167,7 @@ const AIVSSAnalysisComponent: React.FC<AIVSSAnalysisProps> = ({
                 <label className="text-sm font-medium text-gray-600 dark:text-gray-400">
                   CVSS Vector
                 </label>
-                <div className="mt-1 p-3 bg-gray-50 rounded-md font-mono text-sm break-all">
+                <div className="mt-1 p-3 bg-gray-50 rounded-md text-black font-mono text-sm break-all">
                   {scores.cvssVectorString}
                 </div>
               </div>
@@ -175,7 +175,7 @@ const AIVSSAnalysisComponent: React.FC<AIVSSAnalysisProps> = ({
                 <label className="text-sm font-medium text-gray-600 dark:text-gray-400">
                   AIVSS Vector
                 </label>
-                <div className="mt-1 p-3 bg-gray-50 rounded-md font-mono text-sm break-all">
+                <div className="mt-1 p-3 bg-gray-50 rounded-md font-mono text-black text-sm break-all">
                   {scores.aivssVectorString}
                 </div>
               </div>
