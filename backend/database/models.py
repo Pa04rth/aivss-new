@@ -108,6 +108,9 @@ class ScanResult(Base):
             'lowRisks': self.low_risks,
             'scanData': json.loads(self.scan_data) if self.scan_data else {}
         }
+        
+        
+        
 
 class WorkflowCache(Base):
     """Cache for workflow data to avoid repeated API calls"""
