@@ -39,18 +39,18 @@ export default function SecurityReportHeader({
       <div>
         <button
           onClick={() => router.push("/my-scans")}
-          className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors mb-4"
+          className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 hover:text-gray-900 transition-colors mb-4"
         >
           <ArrowLeft size={16} /> Back
         </button>
         <h1 className="text-3xl font-bold tracking-tight">Security Analysis</h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-1">
+        <p className="text-gray-600 mt-1">
           Detailed vulnerability assessment and security recommendations
         </p>
       </div>
 
       {/* Scan Summary Bar */}
-      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5 space-y-4">
+      <div className="bg-white bg-white border border-gray-200 border-gray-200 rounded-lg p-5 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -63,45 +63,34 @@ export default function SecurityReportHeader({
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t">
           <div className="flex items-center gap-3">
-            <Calendar size={20} className="text-gray-600 dark:text-gray-400" />
+            <Calendar size={20} className="text-gray-600" />
             <div>
-              <p className="text-xs text-gray-600 dark:text-gray-400">
-                Scan Created
-              </p>
+              <p className="text-xs text-gray-600">Scan Created</p>
               <p className="text-sm font-semibold">
                 {new Date(scanCreated).toLocaleString()}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <CheckCircle
-              size={20}
-              className="text-gray-600 dark:text-gray-400"
-            />
+            <CheckCircle size={20} className="text-gray-600" />
             <div>
-              <p className="text-xs text-gray-600 dark:text-gray-400">
-                Scan Completed
-              </p>
+              <p className="text-xs text-gray-600">Scan Completed</p>
               <p className="text-sm font-semibold">
                 {new Date(scanCompleted).toLocaleString()}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <FileCode size={20} className="text-gray-600 dark:text-gray-400" />
+            <FileCode size={20} className="text-gray-600" />
             <div>
-              <p className="text-xs text-gray-600 dark:text-gray-400">
-                Total Files
-              </p>
+              <p className="text-xs text-gray-600">Total Files</p>
               <p className="text-sm font-semibold">{totalFiles}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <Hash size={20} className="text-gray-600 dark:text-gray-400" />
+            <Hash size={20} className="text-gray-600" />
             <div>
-              <p className="text-xs text-gray-600 dark:text-gray-400">
-                Lines of Code
-              </p>
+              <p className="text-xs text-gray-600">Lines of Code</p>
               <p className="text-sm font-semibold">{linesOfCode}</p>
             </div>
           </div>
@@ -109,7 +98,7 @@ export default function SecurityReportHeader({
       </div>
 
       {/* Risk Summary - Matching Dashboard Display */}
-      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5">
+      <div className="bg-white bg-white border border-gray-200 border-gray-200 rounded-lg p-5">
         <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
           <CheckCircle className="h-5 w-5 text-green-500" />
           Risk Summary

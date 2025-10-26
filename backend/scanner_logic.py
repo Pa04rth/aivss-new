@@ -15,10 +15,12 @@ load_dotenv()
 # --- Data Structures & Static Analysis ---
 @dataclass
 class Risk:
-    file_path: str; line_number: int; risk_type: str; severity: str; message: str; suggestion: str; source: str
+    file: str; line: int; risk: str; severity: str; message: str; recommendation: str; source: str; priority: str
 
 class StaticRiskDetector(ast.NodeVisitor):
     CRITICAL_CALLS = {'eval', 'exec', 'os.system', 'os.remove', 'shutil.rmtree'}
+    HIGH_CALLS = {'subprocess.run', 'subprocess.call', 'subprocess.Popen', 'os.popen', 'commands.getoutput'}
+    MEDIUM_CALLS = {'pickle.loads', 'pickle.load', 'marshal.loads', 'marshal.load', 'compile'}
     
     def __init__(self, file_path: str):
         self.file_path = file_path
@@ -28,21 +30,60 @@ class StaticRiskDetector(ast.NodeVisitor):
         func_name = self._get_function_name(node)
         if func_name in self.CRITICAL_CALLS:
             self.risks.append(Risk(
-                file_path=os.path.basename(self.file_path),
-                line_number=node.lineno,
-                risk_type=f'Code Execution Vulnerability ({func_name})',
+                file=os.path.basename(self.file_path),
+                line=node.lineno,
+                risk=f'Code Execution Vulnerability ({func_name})',
                 severity='critical',
                 message=f'Critical: Use of dangerous function `{func_name}` detected.',
-                suggestion=f'Replace `{func_name}` with safer alternatives.',
-                source='static'
+                recommendation=f'Replace `{func_name}` with safer alternatives.',
+                source='static',
+                priority='high'
+            ))
+        elif func_name in self.HIGH_CALLS:
+            self.risks.append(Risk(
+                file=os.path.basename(self.file_path),
+                line=node.lineno,
+                risk=f'Process Execution Risk ({func_name})',
+                severity='high',
+                message=f'High: Use of subprocess/process execution function `{func_name}` detected.',
+                recommendation=f'Validate and sanitize inputs before using `{func_name}`.',
+                source='static',
+                priority='high'
+            ))
+        elif func_name in self.MEDIUM_CALLS:
+            self.risks.append(Risk(
+                file=os.path.basename(self.file_path),
+                line=node.lineno,
+                risk=f'Deserialization Risk ({func_name})',
+                severity='medium',
+                message=f'Medium: Use of deserialization function `{func_name}` detected.',
+                recommendation=f'Only deserialize trusted data sources with `{func_name}`.',
+                source='static',
+                priority='medium'
             ))
         self.generic_visit(node)
-        return self.risks
 
     def _get_function_name(self, node: ast.Call) -> str:
-        if isinstance(node.func, ast.Name): return node.func.id
-        elif isinstance(node.func, ast.Attribute): return node.func.attr
+        if isinstance(node.func, ast.Name): 
+            return node.func.id
+        elif isinstance(node.func, ast.Attribute): 
+            # Get the full qualified name like "subprocess.run"
+            if isinstance(node.func.value, ast.Name):
+                return f"{node.func.value.id}.{node.func.attr}"
+            elif isinstance(node.func.value, ast.Attribute):
+                # Handle nested attributes like "os.path.join"
+                return f"{self._get_attribute_name(node.func.value)}.{node.func.attr}"
+            else:
+                return node.func.attr
         return ""
+    
+    def _get_attribute_name(self, node: ast.Attribute) -> str:
+        """Helper to get full attribute name"""
+        if isinstance(node.value, ast.Name):
+            return f"{node.value.id}.{node.attr}"
+        elif isinstance(node.value, ast.Attribute):
+            return f"{self._get_attribute_name(node.value)}.{node.attr}"
+        return node.attr
 
 # --- Helper Functions ---
 def repair_json(text: str) -> str:
@@ -82,6 +123,8 @@ def get_ai_analysis(code: str) -> Dict:
     You are a world-class cybersecurity expert. Analyze the provided Python code ONLY for the specific vulnerability class mentioned below.
     If you find one or more vulnerabilities of this specific class, respond with a JSON object in a ```json ... ``` block.
     The JSON object MUST contain a single key "findings", which is a list of objects. Each object MUST have keys: "title", "description", "impact", "implementation_guide", "priority", and "severity".
+    Severity levels: "critical", "high", "medium", "low"
+    Priority levels: "high", "medium", "low" (should match severity level)
     If you find NO vulnerabilities of this class, respond with: {"findings": []}.
     """
     

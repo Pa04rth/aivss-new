@@ -222,26 +222,26 @@ export default function N8nWorkflowScan() {
   // Render based on scan state
   if (scanState.status === "completed") {
     return (
-      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-8 md:p-12 w-full max-w-3xl space-y-8 text-center animate-fade-in mx-auto">
+      <div className="bg-white bg-white border border-gray-200 border-gray-200 rounded-xl p-8 md:p-12 w-full max-w-3xl space-y-8 text-center animate-fade-in mx-auto">
         <CheckCircle className="w-16 h-16 text-green-500 mx-auto" />
         <div className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">
             Workflow Analysis Complete!
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600">
             {scanState.message}
           </p>
         </div>
 
         <div className="grid grid-cols-2 gap-4 pt-4">
-          <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
-            <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">
+          <div className="bg-gray-100 rounded-lg p-4">
+            <p className="text-xs font-semibold text-gray-600 uppercase">
               WORKFLOWS ANALYZED
             </p>
             <p className="text-2xl font-bold mt-2">{completedScans.length}</p>
           </div>
-          <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
-            <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">
+          <div className="bg-gray-100 rounded-lg p-4">
+            <p className="text-xs font-semibold text-gray-600 uppercase">
               TOTAL RISKS
             </p>
             <p className="text-2xl font-bold mt-2">
@@ -266,7 +266,7 @@ export default function N8nWorkflowScan() {
               setCompletedScans([]);
               setSelectedWorkflows([]);
             }}
-            className="w-full px-6 py-3 bg-blue-600 text-white dark:bg-blue-500 rounded-md font-semibold flex items-center justify-center gap-2 text-base hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
+            className="w-full px-6 py-3 bg-blue-600 text-white bg-blue-600 rounded-md font-semibold flex items-center justify-center gap-2 text-base hover:bg-blue-700 hover:bg-blue-700 transition-colors"
           >
             <Power size={20} /> Analyze More Workflows
           </button>
@@ -284,9 +284,9 @@ export default function N8nWorkflowScan() {
 
   if (scanState.status === "analyzing") {
     return (
-      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-8 md:p-12 w-full max-w-3xl space-y-6 animate-fade-in mx-auto">
+      <div className="bg-white bg-white border border-gray-200 border-gray-200 rounded-xl p-8 md:p-12 w-full max-w-3xl space-y-6 animate-fade-in mx-auto">
         <div className="flex items-center gap-4">
-          <Loader2 className="w-8 h-8 animate-spin text-blue-600 dark:text-blue-400" />
+          <Loader2 className="w-8 h-8 animate-spin text-blue-600 text-blue-600" />
           <h1 className="text-3xl font-bold tracking-tight">
             Analyzing Workflows
           </h1>
@@ -295,7 +295,7 @@ export default function N8nWorkflowScan() {
           <p className="font-semibold text-lg text-foreground">
             {scanState.message}
           </p>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600">
             Our AI-powered analysis is examining your n8n workflows for security
             risks, potential vulnerabilities, and providing detailed
             recommendations.
@@ -309,7 +309,7 @@ export default function N8nWorkflowScan() {
   return (
     <div className="space-y-8 max-w-3xl mx-auto">
       {/* Connection Status */}
-      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+      <div className="bg-white bg-white border border-gray-200 border-gray-200 rounded-lg p-6">
         <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
           <Link className="w-5 h-5" />
           n8n Connections
@@ -317,13 +317,13 @@ export default function N8nWorkflowScan() {
 
         {connections.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
+            <p className="text-gray-600 mb-4">
               No n8n connections found
             </p>
             <button
               onClick={connectToN8n}
               disabled={scanState.status === "connecting"}
-              className="px-6 py-3 bg-blue-600 text-white dark:bg-blue-500 rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto"
+              className="px-6 py-3 bg-blue-600 text-white bg-blue-600 rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto"
             >
               {scanState.status === "connecting" ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -350,7 +350,7 @@ export default function N8nWorkflowScan() {
                   />
                   <div>
                     <p className="font-medium">{connection.instance_name}</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm text-gray-600">
                       Connected{" "}
                       {new Date(connection.created_at).toLocaleDateString()}
                     </p>
@@ -359,14 +359,14 @@ export default function N8nWorkflowScan() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => loadWorkflows(connection.id)}
-                    className="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:text-blue-400 transition-colors"
+                    className="p-2 text-gray-600 hover:text-blue-600 text-blue-600 transition-colors"
                     title="Load Workflows"
                   >
                     <RefreshCw className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => disconnectConnection(connection.id)}
-                    className="p-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:text-red-400 transition-colors"
+                    className="p-2 text-gray-600 hover:text-red-600 text-red-600 transition-colors"
                     title="Disconnect"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -380,7 +380,7 @@ export default function N8nWorkflowScan() {
 
       {/* Workflow Selection */}
       {workflows.length > 0 && (
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+        <div className="bg-white bg-white border border-gray-200 border-gray-200 rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold flex items-center gap-2">
               <Workflow className="w-5 h-5" />
@@ -389,13 +389,13 @@ export default function N8nWorkflowScan() {
             <div className="flex gap-2">
               <button
                 onClick={selectAllWorkflows}
-                className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded hover:bg-gray-100 dark:bg-gray-800/80 transition-colors"
+                className="px-3 py-1 text-sm bg-gray-100 bg-white text-gray-600 rounded hover:bg-gray-100 bg-white/80 transition-colors"
               >
                 Select All
               </button>
               <button
                 onClick={clearSelection}
-                className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded hover:bg-gray-100 dark:bg-gray-800/80 transition-colors"
+                className="px-3 py-1 text-sm bg-gray-100 bg-white text-gray-600 rounded hover:bg-gray-100 bg-white/80 transition-colors"
               >
                 Clear
               </button>
@@ -408,8 +408,8 @@ export default function N8nWorkflowScan() {
                 key={workflow.id}
                 className={`p-4 border rounded-lg cursor-pointer transition-colors ${
                   selectedWorkflows.includes(workflow.id)
-                    ? "border-blue-600 dark:border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                    : "border-gray-300 dark:border-gray-600 hover:border-blue-600/50 dark:hover:border-blue-500/50"
+                    ? "border-blue-600 bg-blue-50"
+                    : "border-gray-300 hover:border-blue-600/50"
                 }`}
                 onClick={() => toggleWorkflowSelection(workflow.id)}
               >
@@ -424,7 +424,7 @@ export default function N8nWorkflowScan() {
                     />
                     <div>
                       <p className="font-medium">{workflow.name}</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-sm text-gray-600">
                         {workflow.nodes_count} nodes •{" "}
                         {workflow.connections_count} connections
                         {workflow.active && (
@@ -437,7 +437,7 @@ export default function N8nWorkflowScan() {
                     {workflow.active && (
                       <div className="w-2 h-2 bg-green-500 rounded-full" />
                     )}
-                    <Shield className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                    <Shield className="w-4 h-4 text-gray-600" />
                   </div>
                 </div>
               </div>
@@ -451,7 +451,7 @@ export default function N8nWorkflowScan() {
                 selectedWorkflows.length === 0 ||
                 (scanState.status as ScanState["status"]) === "analyzing"
               }
-              className="w-full px-6 py-3 bg-blue-600 text-white dark:bg-blue-500 rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-base hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
+              className="w-full px-6 py-3 bg-blue-600 text-white bg-blue-600 rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-base hover:bg-blue-700 hover:bg-blue-700 transition-colors"
             >
               {(scanState.status as ScanState["status"]) === "analyzing" ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -467,7 +467,7 @@ export default function N8nWorkflowScan() {
 
       {/* Error State */}
       {scanState.status === "error" && (
-        <div className="bg-destructive/10 border border-destructive/20 text-red-600 dark:text-red-400 text-sm rounded-lg p-3 text-center">
+        <div className="bg-destructive/10 border border-destructive/20 text-red-600 text-red-600 text-sm rounded-lg p-3 text-center">
           <AlertCircle className="w-4 h-4 mx-auto mb-2" />
           {scanState.message}
         </div>

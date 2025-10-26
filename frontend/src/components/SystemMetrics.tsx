@@ -16,9 +16,9 @@ const SystemMetrics: React.FC<SystemMetricsProps> = ({ data }) => {
     {
       label: "Total Scans",
       value: data.totalScans,
-      color: "text-blue-600 dark:text-blue-400",
-      bgColor: "bg-blue-600/10 dark:bg-blue-500/10",
-      borderColor: "border-blue-600/20 dark:border-blue-500/20",
+      color: "text-blue-600",
+      bgColor: "bg-blue-600/10",
+      borderColor: "border-blue-600/20",
     },
     {
       label: "Number Critical Risks",
@@ -52,7 +52,7 @@ const SystemMetrics: React.FC<SystemMetricsProps> = ({ data }) => {
         >
           <CardContent className="pt-8 pb-8 px-8">
             <div className="text-center space-y-4">
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400 leading-tight">
+              <p className="text-sm font-medium text-gray-600 leading-tight">
                 {metric.label}
               </p>
               <p className={`text-4xl font-bold ${metric.color} leading-none`}>

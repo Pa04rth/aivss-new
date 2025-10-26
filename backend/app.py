@@ -9,6 +9,49 @@ import uuid
 from dotenv import load_dotenv
 from scanner_logic import run_scan_on_file
 
+def transform_legacy_scan_data(scan_data):
+    """Transform legacy scan data to match new field structure"""
+    if not isinstance(scan_data, dict):
+        return scan_data
+    
+    # Transform static findings if they exist
+    if 'staticFindings' in scan_data and isinstance(scan_data['staticFindings'], list):
+        transformed_static = []
+        for finding in scan_data['staticFindings']:
+            if isinstance(finding, dict):
+                # Transform old field names to new ones
+                transformed_finding = {
+                    'file': finding.get('file_path', finding.get('file', '')),
+                    'line': finding.get('line_number', finding.get('line', 0)),
+                    'risk': finding.get('risk_type', finding.get('risk', '')),
+                    'severity': finding.get('severity', 'low'),
+                    'message': finding.get('message', ''),
+                    'recommendation': finding.get('suggestion', finding.get('recommendation', '')),
+                    'source': finding.get('source', 'static'),
+                    'priority': finding.get('priority', finding.get('severity', 'low'))
+                }
+                transformed_static.append(transformed_finding)
+        scan_data['staticFindings'] = transformed_static
+    
+    # Transform contextual findings if they exist
+    if 'contextualFindings' in scan_data and isinstance(scan_data['contextualFindings'], list):
+        transformed_contextual = []
+        for finding in scan_data['contextualFindings']:
+            if isinstance(finding, dict):
+                # Ensure contextual findings have all required fields
+                transformed_finding = {
+                    'title': finding.get('title', ''),
+                    'description': finding.get('description', ''),
+                    'impact': finding.get('impact', ''),
+                    'implementation_guide': finding.get('implementation_guide', ''),
+                    'priority': finding.get('priority', finding.get('severity', 'low')),
+                    'severity': finding.get('severity', 'low')
+                }
+                transformed_contextual.append(transformed_finding)
+        scan_data['contextualFindings'] = transformed_contextual
+    
+    return scan_data
+
 # Import new n8n functionality
 from api.n8n_routes import n8n_bp
 from api.auth_routes import auth_bp
@@ -114,7 +157,10 @@ def get_latest_results():
         latest_scan = user_scans[0]
         print(f"🔍 [DEBUG] Returning latest scan for user {user_info['user_id']}: {latest_scan.get('scan_id', 'N/A')}")
         
-        return jsonify(latest_scan)
+        # Transform legacy data to new format
+        transformed_scan = transform_legacy_scan_data(latest_scan)
+        
+        return jsonify(transformed_scan)
         
     except Exception as e:
         print(f"❌ Error getting latest results: {e}")
@@ -132,8 +178,11 @@ def get_scan_history():
         # Get user's scan history
         user_scans = scan_result_manager.get_user_scan_results(user_info['user_id'], limit=50)
         
-        print(f"🔍 [DEBUG] Returning {len(user_scans)} scans for user {user_info['user_id']}")
-        return jsonify(user_scans)
+        # Transform legacy data to new format for all scans
+        transformed_scans = [transform_legacy_scan_data(scan) for scan in user_scans]
+        
+        print(f"🔍 [DEBUG] Returning {len(transformed_scans)} scans for user {user_info['user_id']}")
+        return jsonify(transformed_scans)
         
     except Exception as e:
         print(f"❌ Error getting scan history: {e}")
@@ -238,7 +287,11 @@ def get_scan_by_id(scan_id):
             return jsonify({"error": "Scan not found"}), 404
         
         print(f"🔍 [DEBUG] Found scan {scan_id} for user {user_info['user_id']}")
-        return jsonify(scan)
+        
+        # Transform legacy data to new format
+        transformed_scan = transform_legacy_scan_data(scan)
+        
+        return jsonify(transformed_scan)
         
     except Exception as e:
         print(f"❌ Error getting scan by ID: {e}")

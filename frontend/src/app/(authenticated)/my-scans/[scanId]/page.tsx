@@ -121,7 +121,7 @@ export default function ReportPage({ params }: ReportPageProps) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+      <div className="min-h-screen bg-white bg-white text-gray-900">
         <div className="p-4 md:p-8 space-y-12">
           <SkeletonReportHeader />
           <SkeletonReportSection />
@@ -169,7 +169,7 @@ export default function ReportPage({ params }: ReportPageProps) {
   const totalRisks = allRisks.length;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <div className="min-h-screen bg-white bg-white text-gray-900">
       <div className="p-4 md:p-8 space-y-12">
         <SecurityReportHeader
           scanName={reportData.scanName}
@@ -187,19 +187,19 @@ export default function ReportPage({ params }: ReportPageProps) {
 
         {/* AIVSS Analysis - Show first if available */}
         {reportData.aivssAnalysis && (
-          <div className="pt-8 border-t border-gray-200 dark:border-gray-700">
+          <div className="pt-8 border-t border-gray-200 border-gray-200">
             <AIVSSAnalysisComponent aivssAnalysis={reportData.aivssAnalysis} />
           </div>
         )}
 
         <ContextualAnalysis findings={reportData.contextualFindings} />
-        <div className="pt-8 border-t border-gray-200 dark:border-gray-700">
+        <div className="pt-8 border-t border-gray-200 border-gray-200">
           <StaticAnalysis findings={reportData.staticFindings} />
         </div>
-        <div className="pt-8 border-t border-gray-200 dark:border-gray-700">
+        <div className="pt-8 border-t border-gray-200 border-gray-200">
           <CodeFileAnalysis codeFiles={reportData.annotatedCode} />
         </div>
-        <div className="pt-8 border-t border-gray-200 dark:border-gray-700">
+        <div className="pt-8 border-t border-gray-200 border-gray-200">
           <WorkflowAnalysis analysis={reportData.workflowAnalysis} />
         </div>
       </div>

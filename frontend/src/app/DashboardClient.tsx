@@ -252,7 +252,9 @@ export default function DashboardClient({
       score: parseFloat(score.toFixed(1)),
       level,
       criticalCount: allRisks.filter((r) => r.severity === "critical").length,
+      highCount: allRisks.filter((r) => r.severity === "high").length,
       mediumCount: allRisks.filter((r) => r.severity === "medium").length,
+      lowCount: allRisks.filter((r) => r.severity === "low").length,
       totalRisks: allRisks.length,
     };
   }, [latestScan]);
@@ -373,7 +375,7 @@ export default function DashboardClient({
                       Completed
                     </span>
                   </div>
-                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
                     <Card className="p-4 text-center bg-blue-50 border-blue-200">
                       <p className="text-sm font-medium text-gray-700">
                         Framework
@@ -388,6 +390,12 @@ export default function DashboardClient({
                       </p>
                       <p className="text-2xl font-bold text-red-500">
                         {latestScanMetrics?.criticalCount}
+                      </p>
+                    </Card>
+                    <Card className="p-4 text-center bg-orange-50 border-orange-200">
+                      <p className="text-sm font-medium text-gray-700">High</p>
+                      <p className="text-2xl font-bold text-orange-500">
+                        {latestScanMetrics?.highCount}
                       </p>
                     </Card>
                     <Card className="p-4 text-center bg-yellow-50 border-yellow-200">
@@ -538,7 +546,13 @@ export default function DashboardClient({
                     <div className="flex justify-between">
                       <span>High Risk Items</span>
                       <span className="font-bold">
-                        {dashboardMetrics.highRiskCount}
+                        {latestScanMetrics?.highCount || 0}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Medium Risk Items</span>
+                      <span className="font-bold">
+                        {latestScanMetrics?.mediumCount || 0}
                       </span>
                     </div>
                     <div className="flex justify-between">

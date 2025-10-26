@@ -13,20 +13,20 @@ export default function StaticAnalysis({ findings }: Props) {
     <div className="space-y-8">
       <div>
         <h2 className="text-2xl font-bold tracking-tight flex items-center gap-3">
-          <ShieldOff className="text-blue-600 dark:text-blue-400" />
+          <ShieldOff className="text-blue-600 text-blue-600" />
           Static Analysis Results
-          <span className="text-sm font-bold bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-md">
+          <span className="text-sm font-bold bg-gray-100 text-gray-700 text-gray-700 px-2 py-1 rounded-md">
             {findings.length} found
           </span>
         </h2>
-        <p className="text-gray-700 dark:text-gray-300 mt-1">
+        <p className="text-gray-700 text-gray-700 mt-1">
           Security vulnerabilities detected through automated pattern analysis.
         </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Security Risks Column */}
         <div>
-          <h3 className="font-semibold mb-4 text-gray-800 dark:text-gray-200">
+          <h3 className="font-semibold mb-4 text-gray-800 text-gray-800">
             Security Risks:
           </h3>
           <div className="space-y-4">
@@ -38,14 +38,14 @@ export default function StaticAnalysis({ findings }: Props) {
                   <ShieldAlert size={14} />
                   {finding.severity}
                 </span>
-                <h4 className="font-bold mt-3 text-gray-900 dark:text-gray-100">
+                <h4 className="font-bold mt-3 text-gray-900 text-gray-900">
                   {finding.risk}
                 </h4>
-                <p className="text-sm text-gray-900 dark:text-gray-100 mt-1">
+                <p className="text-sm text-gray-900 text-gray-900 mt-1">
                   {finding.risk} detected.
                 </p>
                 <div className="mt-3">
-                  <span className="text-xs font-semibold bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 px-3 py-1 rounded-full">
+                  <span className="text-xs font-semibold bg-gray-100 text-gray-600 px-3 py-1 rounded-full">
                     File: {finding.file}:{finding.line}
                   </span>
                 </div>

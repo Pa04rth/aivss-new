@@ -60,14 +60,14 @@ export default function ScanDetailsModal({ scan, onClose }: ModalProps) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
       {/* This container now uses theme-aware colors */}
-      <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+      <div className="bg-white bg-white text-gray-900 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold">Scan Details</h2>
             {/* The close button now calls the correct `onClose` function */}
             <button
               onClick={onClose}
-              className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:text-gray-100 text-2xl"
+              className="text-gray-600 hover:text-gray-900 text-2xl"
             >
               &times;
             </button>
@@ -88,7 +88,7 @@ export default function ScanDetailsModal({ scan, onClose }: ModalProps) {
                 </span>
               </div>
               {(scan.timestamp || scan.scanCompleted) && (
-                <span className="text-sm text-gray-600 dark:text-gray-400">
+                <span className="text-sm text-gray-600 text-gray-600">
                   {new Date(
                     scan.timestamp || scan.scanCompleted!
                   ).toLocaleString()}
@@ -97,9 +97,9 @@ export default function ScanDetailsModal({ scan, onClose }: ModalProps) {
             </div>
 
             {scan.file_path && (
-              <div className="p-3 bg-gray-100 dark:bg-gray-700 rounded">
+              <div className="p-3 bg-gray-100 rounded">
                 <p className="text-sm font-medium">File Analyzed:</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-gray-600 text-gray-600">
                   {scan.file_path}
                 </p>
               </div>

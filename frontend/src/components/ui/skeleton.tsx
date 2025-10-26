@@ -7,7 +7,7 @@ function Skeleton({
   return (
     <div
       className={cn(
-        "animate-pulse rounded-md bg-gray-200 dark:bg-gray-700",
+        "animate-pulse rounded-md bg-gray-200",
         className
       )}
       {...props}
@@ -20,7 +20,7 @@ function SkeletonCard({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6",
+        "bg-white rounded-lg border border-gray-200 p-6",
         className
       )}
     >
@@ -40,7 +40,7 @@ function SkeletonScanCard({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5",
+        "bg-white border border-gray-200 rounded-lg p-5",
         className
       )}
     >

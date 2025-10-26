@@ -1,3 +1,4 @@
+"use client";
 import {
   Card,
   CardContent,
@@ -20,19 +21,14 @@ const ComingSoon: React.FC<ComingSoonProps> = ({
     <div className="min-h-screen flex items-center justify-center p-6">
       <div className="max-w-2xl w-full text-center space-y-6">
         <div className="flex justify-center">
-          <div className="p-4 bg-blue-600/10 dark:bg-blue-500/10 rounded-full">
-            <Construction
-              size={48}
-              className="text-blue-600 dark:text-blue-400"
-            />
+          <div className="p-4 bg-blue-600/10 rounded-full">
+            <Construction size={48} className="text-blue-600" />
           </div>
         </div>
 
         <div className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
-          <p className="text-gray-600 dark:text-gray-400 text-lg">
-            {description}
-          </p>
+          <p className="text-gray-600 text-lg">{description}</p>
         </div>
 
         <Card>
@@ -47,15 +43,15 @@ const ComingSoon: React.FC<ComingSoonProps> = ({
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-center justify-center gap-3 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
+              <div className="flex items-center justify-center gap-3 p-3 bg-gray-100 rounded-lg">
                 <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
                 <span className="text-sm">Feature development in progress</span>
               </div>
-              <div className="flex items-center justify-center gap-3 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
+              <div className="flex items-center justify-center gap-3 p-3 bg-gray-100 rounded-lg">
                 <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
                 <span className="text-sm">Security testing and validation</span>
               </div>
-              <div className="flex items-center justify-center gap-3 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
+              <div className="flex items-center justify-center gap-3 p-3 bg-gray-100 rounded-lg">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                 <span className="text-sm">
                   Final integration and deployment
@@ -65,7 +61,7 @@ const ComingSoon: React.FC<ComingSoonProps> = ({
           </CardContent>
         </Card>
 
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-sm text-gray-600">
           Check back soon for updates, or contact us for more information about
           this feature.
         </p>

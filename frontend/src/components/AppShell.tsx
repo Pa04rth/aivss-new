@@ -20,7 +20,6 @@ import {
   LogOut,
   User,
 } from "lucide-react";
-import ThemeToggle from "./ThemeToggle";
 import { getCurrentUser, logout, User as AuthUser } from "@/lib/auth";
 
 // TYPE DEFINITION FOR A SINGLE NAVIGATION LINK
@@ -68,9 +67,14 @@ export default function AppShell({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  // Reset navigation loading when pathname changes
+  // Reset navigation loading when pathname changes - with delay to show loader
   useEffect(() => {
-    setIsNavigating(false);
+    // Add a small delay to keep the loading indicator visible
+    const timer = setTimeout(() => {
+      setIsNavigating(false);
+    }, 300);
+
+    return () => clearTimeout(timer);
   }, [pathname]);
 
   useEffect(() => {
@@ -140,16 +144,12 @@ export default function AppShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen">
       <div className="flex h-screen">
         {/* Sidebar */}
-        <div className="w-64 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col">
-          <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="w-64 bg-gray-50 border-r border-gray-200 flex flex-col">
+          <div className="p-4 border-b border-gray-200">
             <div>
-              <h1 className="text-lg font-bold text-gray-900 dark:text-gray-100">
-                Hive
-              </h1>
-              <p className="text-xs text-gray-900 dark:text-gray-100">
-                Agentic Security Scanner
-              </p>
-              <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
+              <h1 className="text-lg font-bold text-gray-900">Hive</h1>
+              <p className="text-xs text-gray-900">Agentic Security Scanner</p>
+              <p className="text-xs text-gray-600 mt-2">
                 This is a proof of concept of our multi agent security scanner.
                 We love ideas and recommendations of what you'd like to see in
                 such a tool!
@@ -157,7 +157,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
                   href="https://www.aegentdev.com/contact"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 dark:text-blue-400 underline hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+                  className="text-blue-600 underline hover:text-blue-700 transition-colors"
                 >
                   {" "}
                   Click here to contact us!
@@ -170,7 +170,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <div className="p-4">
             <Link
               href="/scan-file"
-              className="flex items-center justify-center w-full px-4 py-2.5 text-sm font-semibold bg-blue-600 text-white dark:bg-blue-500 rounded-md hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-sm hover:shadow-md"
+              className="flex items-center justify-center w-full px-4 py-2.5 text-sm font-semibold bg-blue-600 text-white rounded-md hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-sm hover:shadow-md"
             >
               <UploadCloud size={18} className="mr-2" />
               Scan File
@@ -180,7 +180,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <nav className="flex-1 p-4 space-y-6 overflow-y-auto">
             {navigation.map((section) => (
               <div key={section.section}>
-                <h3 className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-3">
+                <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3">
                   {section.section}
                 </h3>
                 <ul className="space-y-1">
@@ -198,8 +198,8 @@ export default function AppShell({ children }: { children: ReactNode }) {
                             transition-all duration-200 ease-in-out
                             ${
                               isActive
-                                ? "bg-blue-600 text-white dark:bg-blue-500 shadow-md scale-[1.02]"
-                                : "text-gray-600 dark:text-gray-400 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-500 hover:scale-[1.02] hover:shadow-md active:scale-[0.98]"
+                                ? "bg-blue-600 text-white shadow-md scale-[1.02]"
+                                : "text-gray-600 hover:bg-blue-600 hover:text-white hover:scale-[1.02] hover:shadow-md active:scale-[0.98]"
                             }
                           `}
                         >
@@ -215,11 +215,11 @@ export default function AppShell({ children }: { children: ReactNode }) {
                               className={`px-2 py-1 text-xs rounded-full font-semibold transition-colors duration-200 ${
                                 item.tag === "Critical"
                                   ? isActive
-                                    ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                                    : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 group-hover:bg-red-200 dark:group-hover:bg-red-800"
+                                    ? "bg-red-100 text-red-800"
+                                    : "bg-red-100 text-red-800 group-hover:bg-red-200"
                                   : isActive
-                                  ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                                  : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 group-hover:bg-yellow-200 dark:group-hover:bg-yellow-800"
+                                  ? "bg-yellow-100 text-yellow-800"
+                                  : "bg-yellow-100 text-yellow-800 group-hover:bg-yellow-200"
                               }`}
                             >
                               {item.tag}
@@ -234,13 +234,13 @@ export default function AppShell({ children }: { children: ReactNode }) {
             ))}
           </nav>
 
-          <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-xs text-gray-600 dark:text-gray-400">
+          <div className="p-4 border-t border-gray-200">
+            <p className="text-xs text-gray-600">
               <a
                 href="https://www.aegentdev.com/blog"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 dark:text-blue-400 underline hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-200"
+                className="text-blue-600 underline hover:text-blue-700 transition-colors duration-200"
               >
                 Click here to check out our research and blogs!
               </a>
@@ -250,10 +250,10 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
         {/* Main content */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+          <header className="bg-white border-b border-gray-200 px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                <h2 className="text-lg font-semibold text-gray-900">
                   {pathname === "/"
                     ? "Dashboard"
                     : pathname === "/scan-file"
@@ -278,28 +278,23 @@ export default function AppShell({ children }: { children: ReactNode }) {
                 </h2>
               </div>
               <div className="flex items-center space-x-2">
-                <ThemeToggle />
-
                 {/* User dropdown */}
                 <div className="relative" ref={userDropdownRef}>
                   <button
                     onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-                    className="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    className="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors"
                   >
-                    <User
-                      size={18}
-                      className="text-gray-600 dark:text-gray-400"
-                    />
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <User size={18} className="text-gray-600" />
+                    <span className="text-sm font-medium text-gray-700">
                       {user?.email || "User"}
                     </span>
                     <ChevronDown size={16} className="text-gray-500" />
                   </button>
 
                   {isUserDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50">
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-50">
                       <div className="py-1">
-                        <div className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">
+                        <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-200">
                           <div className="font-medium">{user?.email}</div>
                           <div className="text-xs text-gray-500">Signed in</div>
                         </div>
@@ -308,7 +303,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
                             logout();
                             setIsUserDropdownOpen(false);
                           }}
-                          className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                          className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                         >
                           <LogOut size={16} className="mr-2" />
                           Sign out
@@ -320,11 +315,16 @@ export default function AppShell({ children }: { children: ReactNode }) {
               </div>
             </div>
           </header>
-          <main className="flex-1 overflow-auto bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 relative">
+          <main className="flex-1 overflow-auto bg-white text-gray-900 relative">
             {/* Navigation Loading Indicator */}
             {isNavigating && (
-              <div className="absolute top-0 left-0 right-0 h-1 bg-blue-600/20 dark:bg-blue-500/20 z-50">
-                <div className="h-full bg-blue-600 dark:bg-blue-500 animate-pulse"></div>
+              <div className="absolute inset-0 bg-white/90 backdrop-blur-sm z-50 flex items-center justify-center">
+                <div className="text-center space-y-4">
+                  <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                  <p className="text-sm font-medium text-gray-900">
+                    Loading...
+                  </p>
+                </div>
               </div>
             )}
             {children}

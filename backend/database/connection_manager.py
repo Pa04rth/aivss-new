@@ -297,12 +297,16 @@ class ScanResultManager:
         """Store scan result in database"""
         session = self.db_manager.get_session()
         try:
-            # Extract metrics from scan data
-            total_risks = len(scan_data.get('risks', []))
-            critical_risks = len([r for r in scan_data.get('risks', []) if r.get('severity') == 'critical'])
-            high_risks = len([r for r in scan_data.get('risks', []) if r.get('severity') == 'high'])
-            medium_risks = len([r for r in scan_data.get('risks', []) if r.get('severity') == 'medium'])
-            low_risks = len([r for r in scan_data.get('risks', []) if r.get('severity') == 'low'])
+            # Extract metrics from scan data - combine contextual and static findings
+            contextual_findings = scan_data.get('contextualFindings', [])
+            static_findings = scan_data.get('staticFindings', [])
+            all_risks = contextual_findings + static_findings
+            
+            total_risks = len(all_risks)
+            critical_risks = len([r for r in all_risks if r.get('severity') == 'critical'])
+            high_risks = len([r for r in all_risks if r.get('severity') == 'high'])
+            medium_risks = len([r for r in all_risks if r.get('severity') == 'medium'])
+            low_risks = len([r for r in all_risks if r.get('severity') == 'low'])
             
             # Determine scan type
             scan_type = 'python_file'

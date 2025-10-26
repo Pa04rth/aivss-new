@@ -91,24 +91,24 @@ export default function MyScansClient({
     <div className="p-8 space-y-8 text-foreground">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">My Scans</h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-2">
+        <p className="text-gray-600 mt-2">
           View and manage your security scan history.
         </p>
       </div>
 
       {/* Welcome Card */}
-      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 flex items-center justify-between">
+      <div className="bg-white bg-white border border-gray-200 border-gray-200 rounded-lg p-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Folder className="w-8 h-8 text-gray-600 dark:text-gray-400" />
+          <Folder className="w-8 h-8 text-gray-600" />
           <div>
             <h2 className="font-semibold">Welcome back!</h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-gray-600">
               You have {scanHistory.length} scan
               {scanHistory.length !== 1 ? "s" : ""} in your history.
             </p>
           </div>
         </div>
-        <span className="text-xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-3 py-1 rounded-full">
+        <span className="text-xs font-semibold bg-gray-100 text-gray-600 px-3 py-1 rounded-full">
           Database
         </span>
       </div>
@@ -129,7 +129,7 @@ export default function MyScansClient({
             return (
               <div
                 key={scan.scan_id}
-                className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5"
+                className="bg-white bg-white border border-gray-200 border-gray-200 rounded-lg p-5"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
@@ -149,7 +149,7 @@ export default function MyScansClient({
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                  <p className="text-xs text-gray-600">
                     Scan Started:{" "}
                     {new Date(
                       scan.scanCreated || scan.timestamp!
@@ -163,7 +163,7 @@ export default function MyScansClient({
                     <ShieldCheck size={14} /> {level} Risk ({score.toFixed(1)}
                     /100)
                   </span>
-                  <span className="text-xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-3 py-1 rounded-full">
+                  <span className="text-xs font-semibold bg-gray-100 text-gray-600 px-3 py-1 rounded-full">
                     {allRisks.length || scan.risks_count || 0} vulnerabilities
                     found
                   </span>
@@ -178,7 +178,7 @@ export default function MyScansClient({
             );
           })
         ) : (
-          <p className="text-gray-600 dark:text-gray-400 text-center py-8">
+          <p className="text-gray-600 text-center py-8">
             No scans found in your history.
           </p>
         )}

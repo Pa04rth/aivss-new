@@ -32,10 +32,10 @@ export default function ScanInterface() {
 
         <TabsContent value="zapier">
           <div className="text-center py-12">
-            <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">
+            <h3 className="text-lg font-semibold mb-2 text-gray-900">
               Zapier Integration
             </h3>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-gray-600">
               Coming soon! We're working on Zapier workflow analysis.
             </p>
           </div>
@@ -43,10 +43,10 @@ export default function ScanInterface() {
 
         <TabsContent value="make">
           <div className="text-center py-12">
-            <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">
+            <h3 className="text-lg font-semibold mb-2 text-gray-900">
               Make.com Integration
             </h3>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-gray-600">
               Coming soon! We're working on Make.com workflow analysis.
             </p>
           </div>
