@@ -1,18 +1,18 @@
 "use client";
 
 import { useState, useEffect, useCallback, use } from "react";
-import { FullScanReport } from "@/lib/types";
-import { authenticatedFetch } from "@/lib/auth";
-import SecurityReportHeader from "@/components/report/SecurityReportHeader";
-import ContextualAnalysis from "@/components/report/ContextualAnalysis";
-import StaticAnalysis from "@/components/report/StaticAnalysis";
-import CodeFileAnalysis from "@/components/report/CodeFileAnalysis";
-import WorkflowAnalysis from "@/components/report/WorkflowAnalysis";
-import AIVSSAnalysisComponent from "@/components/report/AIVSSAnalysis";
+import { FullScanReport } from "../../../../lib/types";
+import { authenticatedFetch } from "../../../../lib/auth";
+import SecurityReportHeader from "../../../../components/report/SecurityReportHeader";
+import ContextualAnalysis from "../../../../components/report/ContextualAnalysis";
+import StaticAnalysis from "../../../../components/report/StaticAnalysis";
+import CodeFileAnalysis from "../../../../components/report/CodeFileAnalysis";
+import WorkflowAnalysis from "../../../../components/report/WorkflowAnalysis";
+import AIVSSAnalysisComponent from "../../../../components/report/AIVSSAnalysis";
 import {
   SkeletonReportHeader,
   SkeletonReportSection,
-} from "@/components/ui/skeleton";
+} from "../../../../components/ui/skeleton";
 
 interface ReportPageProps {
   params: Promise<{

@@ -9,10 +9,10 @@ import {
   ShieldCheck,
   Link,
 } from "lucide-react";
-import { calculateRiskScore } from "@/lib/scoring";
-import ScanDetailsModal from "@/components/ScanDetailsModal";
-import { authenticatedFetch } from "@/lib/auth";
-import { SkeletonScanHistory } from "@/components/ui/skeleton";
+import { calculateRiskScore } from "../../../lib/scoring";
+import ScanDetailsModal from "../../../components/ScanDetailsModal";
+import { authenticatedFetch } from "../../../lib/auth";
+import { SkeletonScanHistory } from "../../../components/ui/skeleton";
 
 // This is the same interface from your Dashboard
 interface ScanResult {

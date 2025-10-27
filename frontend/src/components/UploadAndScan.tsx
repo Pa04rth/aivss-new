@@ -14,7 +14,7 @@ import {
   Power,
 } from "lucide-react";
 import ScanDetailsModal from "./ScanDetailsModal";
-import { authenticatedFetch } from "@/lib/auth";
+import { authenticatedFetch } from "../lib/auth";
 
 type ScanState = "idle" | "uploading" | "polling" | "completed" | "error";
 
@@ -276,12 +276,8 @@ export default function UploadAndScan() {
           >
             <input {...getInputProps()} />
             <UploadCloud className="w-12 h-12 text-gray-600 mb-4" />
-            <p className="text-gray-600">
-              Drop your codebase files here
-            </p>
-            <p className="text-sm text-gray-600/80">
-              or click to browse files
-            </p>
+            <p className="text-gray-600">Drop your codebase files here</p>
+            <p className="text-sm text-gray-600/80">or click to browse files</p>
             <button className="mt-4 px-4 py-2 bg-blue-600 text-white bg-blue-600 rounded-md text-sm font-semibold">
               Choose Files
             </button>

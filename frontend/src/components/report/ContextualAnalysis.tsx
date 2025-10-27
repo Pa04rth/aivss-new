@@ -1,4 +1,4 @@
-import { ContextualFinding } from "@/lib/types";
+import { ContextualFinding } from "../../lib/types";
 import { AlertTriangle, Lightbulb, ShieldAlert, Code2 } from "lucide-react";
 import {
   Card,
@@ -6,7 +6,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../ui/card";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 

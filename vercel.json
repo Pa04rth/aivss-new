@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd frontend && NODE_PATH=src npm run build",
+  "buildCommand": "cd frontend && npm run build",
   "installCommand": "cd frontend && npm install",
   "framework": null,
   "outputDirectory": "frontend/.next"

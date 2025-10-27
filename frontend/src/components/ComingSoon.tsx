@@ -5,7 +5,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "./ui/card";
 import { Clock, Construction } from "lucide-react";
 
 interface ComingSoonProps {
