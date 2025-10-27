@@ -4,6 +4,9 @@ const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5001";
 
 export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const redirect = searchParams.get("redirect");
+
     const response = await fetch(`${BACKEND_URL}/api/auth/github`, {
       method: "GET",
       headers: {
@@ -18,7 +21,12 @@ export async function GET(request: Request) {
     const data = await response.json();
 
     if (data.success && data.auth_url) {
-      return NextResponse.redirect(data.auth_url);
+      // Add redirect parameter to the auth URL if it was passed
+      const authUrl = new URL(data.auth_url);
+      if (redirect) {
+        authUrl.searchParams.set("redirect", redirect);
+      }
+      return NextResponse.redirect(authUrl.toString());
     } else {
       throw new Error(data.error || "Failed to get GitHub auth URL");
     }
@@ -27,7 +35,7 @@ export async function GET(request: Request) {
     return NextResponse.redirect(
       `${
         process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000"
-      }/landing?error=github_auth_failed`
+      }/login?error=github_auth_failed`
     );
   }
 }

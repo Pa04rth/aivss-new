@@ -19,6 +19,7 @@ const protectedRoutes = [
 // Define public routes that don't require authentication
 const publicRoutes = [
   "/landing",
+  "/login",
   "/auth/google",
   "/auth/github",
   "/auth/success",
@@ -39,9 +40,16 @@ export function middleware(request: NextRequest) {
   // Get auth token from cookies
   const authToken = request.cookies.get("auth_token")?.value;
 
-  // If accessing a protected route without auth token, redirect to landing
+  // If accessing a protected route without auth token, redirect to login with redirect parameter
   if (isProtectedRoute && !authToken) {
-    return NextResponse.redirect(new URL("/landing", request.url));
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // If accessing login page with auth token, redirect to dashboard
+  if (pathname === "/login" && authToken) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   // If accessing landing page with auth token, redirect to dashboard
