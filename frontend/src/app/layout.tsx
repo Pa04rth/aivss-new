@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import "@/lib/test-auth"; // Auto-set test auth token
+// import "@/lib/test-auth"; // Auto-set test auth token
 
 // This is a Server Component, so we can export metadata
 export const metadata: Metadata = {
