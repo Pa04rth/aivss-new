@@ -14,7 +14,7 @@ import {
   Power,
 } from "lucide-react";
 import ScanDetailsModal from "./ScanDetailsModal";
-import { authenticatedFetch } from "../lib/auth";
+import { authenticatedFetch } from "@/lib/auth";
 
 type ScanState = "idle" | "uploading" | "polling" | "completed" | "error";
 

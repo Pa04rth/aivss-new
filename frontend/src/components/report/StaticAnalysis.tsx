@@ -1,5 +1,5 @@
-import { StaticFinding } from "../../lib/types";
-import { Card } from "../ui/card";
+import { StaticFinding } from "@/lib/types";
+import { Card } from "@/components/ui/card";
 import { ShieldAlert, ShieldOff, Wrench } from "lucide-react";
 
 interface Props {

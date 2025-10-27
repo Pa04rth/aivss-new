@@ -20,7 +20,7 @@ import {
   LogOut,
   User,
 } from "lucide-react";
-import { getCurrentUser, logout, User as AuthUser } from "../lib/auth";
+import { getCurrentUser, logout, User as AuthUser } from "@/lib/auth";
 
 // TYPE DEFINITION FOR A SINGLE NAVIGATION LINK
 interface NavigationItem {

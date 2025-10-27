@@ -1,5 +1,5 @@
-import { FullScanReport } from "../../lib/types";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { FullScanReport } from "@/lib/types";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GitGraph, Layers3, Cog, Cpu, Waypoints, Zap } from "lucide-react";
 
 interface Props {

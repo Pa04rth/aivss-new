@@ -14,17 +14,17 @@ import {
   Eye,
   Power,
 } from "lucide-react";
-import { authenticatedFetch } from "../lib/api";
-import { FullScanReport } from "../lib/types";
-import { calculateRiskScore } from "../lib/scoring";
-import StatCard from "../components/dashboard/StatCard";
-import VulnerabilityList from "../components/dashboard/VulnerabilityList";
-import { Card } from "../components/ui/card";
-import { Button } from "../components/ui/button";
+import { authenticatedFetch } from "@/lib/api";
+import { FullScanReport } from "@/lib/types";
+import { calculateRiskScore } from "@/lib/scoring";
+import StatCard from "@/components/dashboard/StatCard";
+import VulnerabilityList from "@/components/dashboard/VulnerabilityList";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   SkeletonDashboardMetrics,
   SkeletonScanHistory,
-} from "../components/ui/skeleton";
+} from "@/components/ui/skeleton";
 
 interface DashboardClientProps {
   initialScanResults?: FullScanReport | null;

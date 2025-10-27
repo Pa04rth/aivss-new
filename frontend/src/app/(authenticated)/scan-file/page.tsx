@@ -1,6 +1,6 @@
 "use client";
 
-import ScanInterface from "../../../components/ScanInterface";
+import ScanInterface from "@/components/ScanInterface";
 
 export default function ScanFilePage() {
   return (
