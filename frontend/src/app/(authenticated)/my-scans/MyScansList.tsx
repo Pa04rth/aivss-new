@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import {
   Folder,
   Eye,
   CheckCircle,
   ShieldAlert,
   ShieldCheck,
-  Link,
 } from "lucide-react";
 import { calculateRiskScore } from "@/lib/scoring";
 import ScanDetailsModal from "@/components/ScanDetailsModal";
@@ -39,6 +39,22 @@ interface ScanResult {
   scanCompleted?: string;
   totalFiles?: number;
   linesOfCode?: number;
+  // Add backend-calculated metrics
+  totalRisks?: number;
+  criticalRisks?: number;
+  highRisks?: number;
+  mediumRisks?: number;
+  lowRisks?: number;
+  // Add nested scanData field for backend response structure
+  scanData?: {
+    contextualFindings?: any[];
+    staticFindings?: any[];
+    risks?: any[];
+    constraints_count?: number;
+    workflowAnalysis?: any;
+    aivssAnalysis?: any;
+    aarsAnalysis?: any;
+  };
 }
 interface MyScansClientProps {
   initialScanHistory?: ScanResult[];
@@ -119,10 +135,19 @@ export default function MyScansClient({
           <SkeletonScanHistory />
         ) : scanHistory.length > 0 ? (
           scanHistory.map((scan) => {
+            // Check both top-level and nested scanData structure
+            const contextualFindings =
+              scan.contextualFindings ||
+              scan.scanData?.contextualFindings ||
+              [];
+            const staticFindings =
+              scan.staticFindings || scan.scanData?.staticFindings || [];
+            const risks = scan.risks || scan.scanData?.risks || [];
+
             const allRisks = [
-              ...(scan.contextualFindings || []),
-              ...(scan.staticFindings || []),
-              ...(scan.risks || []),
+              ...contextualFindings,
+              ...staticFindings,
+              ...risks,
             ];
             const { score, level, color } = calculateRiskScore(allRisks);
 
@@ -156,20 +181,25 @@ export default function MyScansClient({
                     ).toLocaleString()}
                   </p>
                 </div>
-                <div className="flex items-center gap-4 mt-4">
-                  <span
-                    className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full ${color} bg-opacity-10`}
-                  >
-                    <ShieldCheck size={14} /> {level} Risk ({score.toFixed(1)}
-                    /100)
-                  </span>
-                  <span className="text-xs font-semibold bg-gray-100 text-gray-600 px-3 py-1 rounded-full">
-                    {allRisks.length || scan.risks_count || 0} vulnerabilities
-                    found
-                  </span>
+                <div className="flex items-center justify-between mt-4">
+                  <div className="flex items-center gap-4">
+                    <span
+                      className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full ${color} bg-opacity-10`}
+                    >
+                      <ShieldCheck size={14} /> {level} Risk ({score.toFixed(1)}
+                      /100)
+                    </span>
+                    <span className="text-xs font-semibold bg-gray-100 text-gray-600 px-3 py-1 rounded-full">
+                      {scan.totalRisks ||
+                        allRisks.length ||
+                        scan.risks_count ||
+                        0}{" "}
+                      vulnerabilities found
+                    </span>
+                  </div>
                   <Link
                     href={`/my-scans/${scan.scan_id}`}
-                    className="flex items-center gap-2 text-sm font-semibold text-primary hover:underline ml-auto"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition-colors"
                   >
                     <Eye size={16} /> View Report
                   </Link>
