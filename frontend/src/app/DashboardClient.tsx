@@ -220,15 +220,19 @@ export default function DashboardClient({
       totalRiskScore = 0,
       highRiskCount = 0;
     scanHistory.forEach((scan) => {
-      const allRisks = [
-        ...(scan.contextualFindings || []),
-        ...(scan.staticFindings || []),
-      ];
+      // Check both top-level and nested scanData structure
+      const contextualFindings =
+        scan.contextualFindings || scan.scanData?.contextualFindings || [];
+      const staticFindings =
+        scan.staticFindings || scan.scanData?.staticFindings || [];
+      const allRisks = [...contextualFindings, ...staticFindings];
+
       const { score } = calculateRiskScore(allRisks);
       totalRiskScore += score;
-      if (allRisks.some((r) => r.severity === "critical")) compromisedCount++;
+      if (allRisks.some((r) => r.severity?.toLowerCase() === "critical"))
+        compromisedCount++;
       highRiskCount += allRisks.filter((r) =>
-        ["critical", "high"].includes(r.severity)
+        ["critical", "high"].includes(r.severity?.toLowerCase())
       ).length;
     });
     const avgRiskScore = totalRiskScore / scanHistory.length;
@@ -243,19 +247,41 @@ export default function DashboardClient({
 
   const latestScanMetrics = useMemo(() => {
     if (!latestScan) return null;
-    const allRisks = [
-      ...(latestScan.contextualFindings || []),
-      ...(latestScan.staticFindings || []),
-    ];
+
+    // Check both top-level and nested scanData structure
+    const contextualFindings =
+      latestScan.contextualFindings ||
+      latestScan.scanData?.contextualFindings ||
+      [];
+    const staticFindings =
+      latestScan.staticFindings || latestScan.scanData?.staticFindings || [];
+    const allRisks = [...contextualFindings, ...staticFindings];
+
     const { score, level } = calculateRiskScore(allRisks);
+
+    const criticalCount =
+      latestScan.criticalRisks ??
+      allRisks.filter((r) => r.severity?.toLowerCase() === "critical").length;
+    const highCount =
+      latestScan.highRisks ??
+      allRisks.filter((r) => r.severity?.toLowerCase() === "high").length;
+    const mediumCount =
+      latestScan.mediumRisks ??
+      allRisks.filter((r) => r.severity?.toLowerCase() === "medium").length;
+    const lowCount =
+      latestScan.lowRisks ??
+      allRisks.filter((r) => r.severity?.toLowerCase() === "low").length;
+    const totalRisks = latestScan.totalRisks ?? allRisks.length;
+
+    // Prefer backend-calculated values, fallback to calculated from findings
     return {
       score: parseFloat(score.toFixed(1)),
       level,
-      criticalCount: allRisks.filter((r) => r.severity === "critical").length,
-      highCount: allRisks.filter((r) => r.severity === "high").length,
-      mediumCount: allRisks.filter((r) => r.severity === "medium").length,
-      lowCount: allRisks.filter((r) => r.severity === "low").length,
-      totalRisks: allRisks.length,
+      criticalCount,
+      highCount,
+      mediumCount,
+      lowCount,
+      totalRisks,
     };
   }, [latestScan]);
 
