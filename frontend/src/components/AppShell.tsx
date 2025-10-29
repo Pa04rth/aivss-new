@@ -193,6 +193,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <div className="p-4">
             <Link
               href="/scan-file"
+              onClick={() => setIsNavigating(true)}
               className="flex items-center justify-center w-full px-4 py-2.5 text-sm font-semibold bg-blue-600 text-white rounded-md hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-sm hover:shadow-md"
             >
               <UploadCloud size={18} className="mr-2" />
