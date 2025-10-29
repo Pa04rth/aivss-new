@@ -90,6 +90,19 @@ export default function AppShell({ children }: { children: ReactNode }) {
       });
   }, []);
 
+  // Prevent body scroll when navigating
+  useEffect(() => {
+    if (isNavigating) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isNavigating]);
+
   // CORRECTLY TYPED NAVIGATION ARRAY
   const navigation: NavigationSection[] = [
     {
@@ -142,6 +155,16 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen">
+      {/* Navigation Loading Indicator - Fixed overlay covering full screen */}
+      {isNavigating && (
+        <div className="fixed inset-0 bg-white/90 backdrop-blur-sm z-[9999] flex items-center justify-center">
+          <div className="text-center space-y-4">
+            <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <p className="text-sm font-medium text-gray-900">Loading...</p>
+          </div>
+        </div>
+      )}
+
       <div className="flex h-screen">
         {/* Sidebar */}
         <div className="w-64 bg-gray-50 border-r border-gray-200 flex flex-col">
@@ -154,7 +177,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
                 We love ideas and recommendations of what you'd like to see in
                 such a tool!
                 <a
-                  href="https://www.aegentdev.com/contact"
+                  href="https://www.linkedin.com/in/parthsohaney/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 underline hover:text-blue-700 transition-colors"
@@ -237,7 +260,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <div className="p-4 border-t border-gray-200">
             <p className="text-xs text-gray-600">
               <a
-                href="https://www.aegentdev.com/blog"
+                href="https://blog.parthsohaney.online/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-600 underline hover:text-blue-700 transition-colors duration-200"
@@ -316,17 +339,6 @@ export default function AppShell({ children }: { children: ReactNode }) {
             </div>
           </header>
           <main className="flex-1 overflow-auto bg-white text-gray-900 relative">
-            {/* Navigation Loading Indicator */}
-            {isNavigating && (
-              <div className="absolute inset-0 bg-white/90 backdrop-blur-sm z-50 flex items-center justify-center">
-                <div className="text-center space-y-4">
-                  <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
-                  <p className="text-sm font-medium text-gray-900">
-                    Loading...
-                  </p>
-                </div>
-              </div>
-            )}
             {children}
           </main>
         </div>
